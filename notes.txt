@@ -1,0 +1,24 @@
+next {
+    一阶 markov 有问题吗？
+        z 里放 v
+        RNN(z, h) 替换成 NN(z)
+    东西全放到 h 里了怎么办？
+        z 上加变换只是在和 encoder decoder 玩， 与 RNN 无关怎么办
+        不可能。 RNN 的输入是 z. 
+    双体
+        只有二维椭圆轨道哦， ok? 
+            ok
+        渲染？ 更像 Junyan 还是更像 Xuanjie?
+            xuanjie
+        背景为黑
+            doesn't matter
+    读 S3 doc
+        最小作用量 = 变分模拟
+            和 GAN 有啥关系？
+            这里， 物理规律的时候， EBM 的输入是时序。 
+            GAN 没有时序， 但也是一种 EBM. 
+        如果把对称性理解成 "minimize z capacity", 
+            可以把 VAE 换成 AE, 然后加对称性。
+        "用对称性去构建context dependency"
+            我们做的对称性 focus on 时序规律
+}
