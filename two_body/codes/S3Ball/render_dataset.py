@@ -1,5 +1,4 @@
 import time
-import random
 import numpy as np
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -11,65 +10,102 @@ WIN_W = 320
 WIN_H = 320
 IMG_W = 32
 IMG_H = 32
-DT = 0.2
-TRAJ_LEN = 20
+# DT = 1
+# TRAJ_LEN = 20
+DT = .5
+TRAJ_LEN = 50
 IMG_FOLDER_PATH = 'Ball3DImg'
 IMG_SAVE_PATH = f'{IMG_FOLDER_PATH}/{IMG_H}_{IMG_W}_{DT}_{TRAJ_LEN}_3_init_points_colorful_continue_evalset'
 IMG_NAME_WITH_POSITION = True
 DRAW_GIRD = True
 
-MODE_MAKE_IMG = 'make_img'
 MODE_LOCATE = 'locate'
 MODE_OBV_ONLY = 'obv_only'
+MODE_MAKE_IMG = 'make_img'
 
-RUNNING_MODE = MODE_LOCATE
+# RUNNING_MODE = MODE_LOCATE
+RUNNING_MODE = MODE_OBV_ONLY
 
-VIEW = np.array([-0.8, 0.8, -0.8, 0.8, 1.0, 15.0])  # 视景体的left/right/bottom/top/near/far六个面
+VIEW = np.array([-0.8, 0.8, -0.8, 0.8, 1.0, 30.0])  # 视景体的left/right/bottom/top/near/far六个面
 SCALE_K = np.array([1.0, 1.0, 1.0])  # 模型缩放比例
-EYE = np.array([0.0, 4.0, 2.0])  # 眼睛的位置（默认z轴的正方向）
-LOOK_AT = np.array([0.0, 0.0, -5.0])  # 瞄准方向的参考点（默认在坐标原点）
-EYE_UP = np.array([0.0, 1.0, 0.0])  # 定义对观察者而言的上方（默认y轴的正方向）
-BALL_RADIUS = 1
+EYE = np.array([0.0, -10.0, 10.0])  # 眼睛的位置（默认z轴的正方向）
+LOOK_AT = np.array([0.0, 0.0, 0.0])  # 瞄准方向的参考点（默认在坐标原点）
+EYE_UP = np.array([0.0, 0.0, 1.0])  # 定义对观察者而言的上方（默认y轴的正方向）
 
 class BallViewer:
     def __init__(self) -> None:
         self.bodies = None
+        self.n_steps = None
+        self.output_path = None
+        self.reset()
     
-    def drawBall(self):
-        ...
+    def reset(self):
+        self.bodies = initLegalTwoBody()
+        self.n_steps = 0
+        if RUNNING_MODE is MODE_MAKE_IMG:
+            self.output_path = ...
 
-def makeBall(x, y, z, color3f=(1, 1, 1)):
+    def loop(self):
+        if RUNNING_MODE is MODE_LOCATE:
+            locate_with_ball()
+            return
+        
+        if self.n_steps >= TRAJ_LEN:
+            self.reset()
+        
+        # render
+        for body in self.bodies:
+            makeBall(*body.position, body.radius, (0, 1, 0))
+        
+        # step
+        self.n_steps += 1
+        stepTime(DT, *self.bodies)
+        if RUNNING_MODE is MODE_OBV_ONLY:
+            time.sleep(.2)
+        
+        # debug
+        # printTotal(self.bodies)
+        # print('distance:', distanceBetween(self.bodies))
+        # print('energy:  ', totalEnergy(self.bodies))
+        # print()
+
+def makeBall(x, y, z, r=1, color3f=(1, 1, 1)):
     glPushMatrix()
     glColor3f(* color3f)
-    glTranslatef(x, y, -z)  # Move to the place
+    glTranslatef(x, y, z)
     quad = gluNewQuadric()
-    gluSphere(quad, BALL_RADIUS, 90, 90)
+    gluSphere(quad, r, 90, 90)
     gluDeleteQuadric(quad)
     glPopMatrix()
 
 def locate_with_ball():
-    makeBall(-3, 1, 1)
-    makeBall(0, 1, -1)
-    makeBall(3, 1, 1)
+    # makeBall(-3, 1, 1)
+    # makeBall(0, 1, -1)
+    # makeBall(3, 1, 1)
 
-    makeBall(-5, 1, 4)
-    makeBall(0, 1, 4)
-    makeBall(4, 1, 4)
+    # makeBall(-5, 1, 4)
+    # makeBall(0, 1, 4)
+    # makeBall(4, 1, 4)
 
-    makeBall(-4, 1, 8)
-    makeBall(2, 1, 8)
-    makeBall(8, 2, 8)
+    # makeBall(-4, 1, 8)
+    # makeBall(2, 1, 8)
+    # makeBall(8, 2, 8)
+
+    makeBall(0, 0, 0)
+    makeBall(5, 0, 0, color3f=(1, 0, 0))
+    makeBall(0, 5, 0, color3f=(0, 1, 0))
+    makeBall(0, 0, 5, color3f=(0, 0, 1))
 
 def drawGird():
+    # glLineWidth(3)
     glBegin(GL_LINES)
     glColor4f(0.0, 0.0, 0.0, 1)  # 设置当前颜色为黑色不透明
-    for i in range(101):
-        glVertex3f(-100.0 + 2 * i, - BALL_RADIUS, -100)
-        glVertex3f(-100.0 + 2 * i, - BALL_RADIUS, 100)
-        glVertex3f(-100.0, - BALL_RADIUS, -100 + 2 * i)
-        glVertex3f(100.0, - BALL_RADIUS, -100 + 2 * i)
+    for i in np.linspace(-5, 5, 10):
+        glVertex3f(i, -100, 0)
+        glVertex3f(i, +100, 0)
+        glVertex3f(-100, i, 0)
+        glVertex3f(+100, i, 0)
     glEnd()
-    glLineWidth(3)
 
 def make_dirs_if_need():
     if RUNNING_MODE == MODE_MAKE_IMG:
@@ -109,7 +145,7 @@ def draw():
     glEnable(GL_LIGHTING)  # 启动光照
     if DRAW_GIRD:
         drawGird()
-    ballViewer.drawBall()
+    ballViewer.loop()
     glDisable(GL_LIGHTING)  # 每次渲染后复位光照状态
 
     # 把数据刷新到显存上
