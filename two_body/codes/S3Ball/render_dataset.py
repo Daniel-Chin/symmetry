@@ -1,4 +1,6 @@
+from os import path
 import time
+from typing import List
 import numpy as np
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -10,13 +12,12 @@ WIN_W = 320
 WIN_H = 320
 IMG_W = 32
 IMG_H = 32
-# DT = 1
-# TRAJ_LEN = 20
-DT = .5
-TRAJ_LEN = 50
-IMG_FOLDER_PATH = 'Ball3DImg'
-IMG_SAVE_PATH = f'{IMG_FOLDER_PATH}/{IMG_H}_{IMG_W}_{DT}_{TRAJ_LEN}_3_init_points_colorful_continue_evalset'
-IMG_NAME_WITH_POSITION = True
+SPF = .2
+DT = 1
+TRAJ_LEN = 20
+# DT = .5
+# TRAJ_LEN = 50
+DATASET_PATH = f'dataset/{IMG_H}_{IMG_W}_{DT}_{TRAJ_LEN}_first'
 DRAW_GIRD = True
 
 MODE_LOCATE = 'locate'
@@ -24,7 +25,8 @@ MODE_OBV_ONLY = 'obv_only'
 MODE_MAKE_IMG = 'make_img'
 
 # RUNNING_MODE = MODE_LOCATE
-RUNNING_MODE = MODE_OBV_ONLY
+# RUNNING_MODE = MODE_OBV_ONLY
+RUNNING_MODE = MODE_MAKE_IMG
 
 VIEW = np.array([-0.8, 0.8, -0.8, 0.8, 1.0, 30.0])  # 视景体的left/right/bottom/top/near/far六个面
 SCALE_K = np.array([1.0, 1.0, 1.0])  # 模型缩放比例
@@ -34,40 +36,65 @@ EYE_UP = np.array([0.0, 0.0, 1.0])  # 定义对观察者而言的上方（默认
 
 class BallViewer:
     def __init__(self) -> None:
-        self.bodies = None
-        self.n_steps = None
+        self.trajectory: List[List[Body]] = None
+        self.stage = None
         self.output_path = None
+        self.output_i = -1
+        self.render_or_screenshot = 0
         self.reset()
     
     def reset(self):
-        self.bodies = initLegalTwoBody()
-        self.n_steps = 0
+        self.trajectory = oneLegalRun(DT, TRAJ_LEN)
+        self.stage = 0
         if RUNNING_MODE is MODE_MAKE_IMG:
-            self.output_path = ...
+            while True:
+                self.output_i += 1
+                print(self.output_i)
+                self.output_path = path.join(
+                    DATASET_PATH, str(self.output_i), 
+                )
+                try:
+                    os.makedirs(self.output_path)
+                except FileExistsError:
+                    pass
+                else:
+                    break
 
     def loop(self):
-        if RUNNING_MODE is MODE_LOCATE:
-            locate_with_ball()
-            return
-        
-        if self.n_steps >= TRAJ_LEN:
-            self.reset()
-        
-        # render
-        for body in self.bodies:
-            makeBall(*body.position, body.radius, (0, 1, 0))
-        
-        # step
-        self.n_steps += 1
-        stepTime(DT, *self.bodies)
-        if RUNNING_MODE is MODE_OBV_ONLY:
-            time.sleep(.2)
-        
-        # debug
-        # printTotal(self.bodies)
-        # print('distance:', distanceBetween(self.bodies))
-        # print('energy:  ', totalEnergy(self.bodies))
-        # print()
+        if self.render_or_screenshot == 0:
+            if RUNNING_MODE is MODE_LOCATE:
+                locate_with_ball()
+                return
+            
+            if self.stage >= TRAJ_LEN:
+                self.reset()
+            
+            bodies = self.trajectory[self.stage]
+
+            # render
+            for i, body in enumerate(bodies):
+                body: Body
+                makeBall(*body.position, body.radius, (
+                    i, 1 - i, i, 
+                ))
+            
+            # step
+            self.stage += 1
+            if RUNNING_MODE is MODE_OBV_ONLY:
+                time.sleep(SPF)
+            
+            # debug
+            # printTotal(bodies)
+            # print('distance:', distanceBetween(bodies))
+            # print('energy:  ', totalEnergy(bodies))
+            # print()
+        else:
+            if RUNNING_MODE is MODE_MAKE_IMG:
+                img_name = path.join(
+                    self.output_path, f'{self.stage}.png', 
+                )
+                screenShot(img_name)
+        self.render_or_screenshot = 1 - self.render_or_screenshot
 
 def makeBall(x, y, z, r=1, color3f=(1, 1, 1)):
     glPushMatrix()
@@ -91,10 +118,18 @@ def locate_with_ball():
     # makeBall(2, 1, 8)
     # makeBall(8, 2, 8)
 
-    makeBall(0, 0, 0)
-    makeBall(5, 0, 0, color3f=(1, 0, 0))
-    makeBall(0, 5, 0, color3f=(0, 1, 0))
-    makeBall(0, 0, 5, color3f=(0, 0, 1))
+    # makeBall(0, 0, 0)
+    # makeBall(5, 0, 0, color3f=(1, 0, 0))
+    # makeBall(0, 5, 0, color3f=(0, 1, 0))
+    # makeBall(0, 0, 5, color3f=(0, 0, 1))
+
+    # radius = 5
+    # for x in (-1, 1):
+    #     for y in (-1, 1):
+    #         for z in (-1, 1):
+    #             makeBall(x * radius, y * radius, z * radius)
+
+    makeBall(0, 0, 0, r=8)
 
 def drawGird():
     # glLineWidth(3)
@@ -107,14 +142,10 @@ def drawGird():
         glVertex3f(+100, i, 0)
     glEnd()
 
-def make_dirs_if_need():
-    if RUNNING_MODE == MODE_MAKE_IMG:
-        if not os.path.isdir(IMG_FOLDER_PATH):
-            os.mkdir(IMG_FOLDER_PATH)
-        if not os.path.isdir(IMG_SAVE_PATH):
-            os.mkdir(IMG_SAVE_PATH)
-
 def init():
+    if RUNNING_MODE == MODE_MAKE_IMG:
+        os.makedirs(DATASET_PATH, exist_ok=True)
+    
     glutInit()
     displayMode = GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH
     glutInitDisplayMode(displayMode)
@@ -182,22 +213,22 @@ def initRender():
     # 设置视口
     glViewport(0, 0, WIN_W, WIN_H)
 
-def screenShot(w, h, sub_folder_dir, imgName):
+def screenShot(filename):
     glReadBuffer(GL_FRONT)
     # 从缓冲区中的读出的数据是字节数组
-    data = glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE)
-    arr = np.zeros((h * w * 3), dtype=np.uint8)
+    data = glReadPixels(0, 0, WIN_W, WIN_H, GL_RGB, GL_UNSIGNED_BYTE)
+    arr = np.zeros((WIN_W * WIN_H * 3), dtype=np.uint8)
     for i in range(0, len(data), 3):
         # 由于opencv中使用的是BGR而opengl使用的是RGB所以arr[i] = data[i+2]，而不是arr[i] = data[i]
         arr[i] = data[i + 2]
         arr[i + 1] = data[i + 1]
         arr[i + 2] = data[i]
-    arr = np.reshape(arr, (h, w, 3))
+    arr = np.reshape(arr, (WIN_H, WIN_W, 3))
     # 因为opengl和OpenCV在Y轴上是颠倒的，所以要进行垂直翻转，可以查看cv2.flip函数
     cv2.flip(arr, 0, arr)
     resized = cv2.resize(arr, (IMG_W, IMG_H), interpolation=cv2.INTER_AREA)
     cv2.imshow('scene', resized)
-    cv2.imwrite(f'{sub_folder_dir}/{imgName}.png', resized)  # 写入图片
+    cv2.imwrite(filename, resized)  # 写入图片
     cv2.waitKey(1)
 
 def reshape(width, height):
@@ -206,7 +237,6 @@ def reshape(width, height):
     glutPostRedisplay()
 
 if __name__ == "__main__":
-    make_dirs_if_need()
     init()
     ballViewer = BallViewer()
     glutMainLoop()  # 进入glut主循环

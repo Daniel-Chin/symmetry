@@ -5,19 +5,29 @@ import numpy as np
 
 __all__ = [
     'Body', 'initLegalTwoBody', 'stepTime', 'printTotal', 
-    'distanceBetween', 'totalEnergy', 
+    'distanceBetween', 'totalEnergy', 'oneLegalRun', 
 ]
 
 POSITION_STD = 3
 VELOCITY_STD = 1
 BIG_G = 10
-FINE_DT = .001   # very fine dt. This is for sim, not for DL. 
+FINE_DT = .01   # very fine dt. This is for sim, not for DL. 
 
 class Body:
     def __init__(self) -> None:
         self.radius = 1
         self.position = np.zeros((3, ))
         self.velocity = np.zeros((3, ))
+    
+    def snapshot(self):
+        body = Body()
+        body.radius = self.radius
+        body.position = self.position.copy()
+        body.velocity = self.velocity.copy()
+        return body
+    
+    def __repr__(self):
+        return f'<ball {self.position}>'
     
     @lru_cache(2)
     def mass(self):
@@ -96,3 +106,38 @@ def totalEnergy(bodies: List[Body]):
         bodies[0].mass() * bodies[1].mass()
     ) / distanceBetween(bodies)
     return energy
+
+def oneRun(dt, n_frames):
+    bodies = initLegalTwoBody()
+    trajectory = []
+    for _ in range(n_frames):
+        trajectory.append([x.snapshot() for x in bodies])
+        stepTime(dt, *bodies)
+        verify(*bodies)
+    return trajectory
+
+class RejectThisSampleException(Exception): pass
+
+def verify(a: Body, b: Body):
+    for body in (a, b):
+        if np.linalg.norm(body.position) > 8:
+            raise RejectThisSampleException
+    if np.linalg.norm(
+        a.position - b.position
+    ) < a.radius + b.radius:
+        raise RejectThisSampleException
+
+def oneLegalRun(*a, **kw):
+    # rejection sampling
+    while True:
+        try:
+            trajectory = oneRun(*a, **kw)
+        except RejectThisSampleException:
+            # print('Reject')
+            continue
+        else:
+            # print('Accept')
+            return trajectory
+
+if __name__ == '__main__':
+    print(*oneLegalRun(1, 30), sep='\n')
