@@ -8,11 +8,11 @@ from torchvision.utils import save_image
 import os
 from normal_rnn import Conv2dGruConv2d, BATCH_SIZE, LAST_CN_NUM, LAST_H, \
     LAST_W
-from codes.S3Ball.ball_data_loader import BallDataLoader
-from codes.S3Ball.symmetry import make_translation_batch, make_rotation_Y_batch, do_seq_symmetry, symm_trans, symm_rotaY
-from codes.loss_counter import LossCounter
+from ball_data_loader import BallDataLoader
+from symmetry import make_translation_batch, make_rotation_Y_batch, do_seq_symmetry, symm_trans, symm_rotaY
+from loss_counter import LossCounter
 
-from codes.common_utils import create_results_path_if_not_exist
+from common_utils import create_results_path_if_not_exist
 
 
 def is_need_train(train_config):
@@ -100,7 +100,7 @@ class BallTrainer:
         z1 = self.model.reparameterize(mu, logvar)
         return z1, mu, logvar
 
-    def batch_seq_encode_to_z(self, x):
+    def batch_seq_encode_to_z(self, x: torch.Tensor):
         img_in = x.contiguous().view(x.size(0) * x.size(1), x.size(2), x.size(3), x.size(4))
         z1, mu, logvar = self.batch_encode_to_z(img_in)
         return [z1.view(x.size(0), x.size(1), z1.size(-1)),

@@ -9,15 +9,15 @@ ROTATION = 'Rot'
 TRANSLATION = 'Trs'
 
 
-def rand_translation(dim=np.array([1, 0, 1]), is_std_normal=False, t_range=(-1, 1)):
-    scale = t_range[1] - t_range[0]
-    if is_std_normal:
-        s = torch.randn(len(dim))
-    else:
-        s = torch.rand(len(dim)) * scale + t_range[0]
-    s = s.mul(torch.from_numpy(dim))
-    s_r = -s
-    return s, s_r
+# def rand_translation(dim=np.array([1, 0, 1]), is_std_normal=False, t_range=(-1, 1)):
+#     scale = t_range[1] - t_range[0]
+#     if is_std_normal:
+#         s = torch.randn(len(dim))
+#     else:
+#         s = torch.rand(len(dim)) * scale + t_range[0]
+#     s = s.mul(torch.from_numpy(dim))
+#     s_r = -s
+#     return s, s_r
 
 
 #def rate_2d(angle, dim=np.array([1,0,1]))
@@ -94,13 +94,18 @@ def make_rand_zoom_batch(batch_size, z_range=((0.3, 1.5), (1., 1.), (0.3, 1.5)))
     return torch.stack(zoomer_batch, dim=0), 1/torch.stack(zoomer_batch, dim=0)
 
 
-def symm_trans(z, transer):
-    return z + transer
+def symm_trans(z, transer: torch.Tensor):
+    # z.shape is (128, 6)
+    return z + transer.repeat(1, 2)
 
 
 def symm_rotaY(z, rotator):
-    z_R = torch.matmul(z.unsqueeze(1), rotator)
-    return z_R.squeeze(1)
+    Z_R = []
+    for i in (0, 3):
+        Z_R.append(torch.matmul(
+            z[:, i:i+3].unsqueeze(1), rotator, 
+        ).squeeze(1))
+    return torch.concat(Z_R, dim=1)
 
 
 def symm_zoom(z, zoomer):

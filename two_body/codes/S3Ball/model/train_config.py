@@ -1,15 +1,15 @@
 import math
 
 CONFIG = {
-    'train_data_path': '../Ball3DImg/32_32_0.2_20_3_init_points_subset_2048/',
-    'latent_code_num': 3,
+    'train_data_path': '../dataset/32_32_1_20_first/',
+    'latent_code_num': 6,
     't_batch_multiple': 4,
     'r_batch_multiple': 4,
     't_range': (-1, 1),
     'r_range': (-math.pi, math.pi),
     'rnn_num_layers': 1,
     'rnn_hidden_size': 256,
-    'eval_data_path': '../Ball3DImg/32_32_0.2_20_3_init_points_EvalSet/',
+    'eval_data_path': '../dataset/32_32_1_20_eval/',
     'model_path': 'Conv2dGruConv2d_symmetry.pt',
     'kld_loss_scalar': 0.01,
     'enable_SRS': True,

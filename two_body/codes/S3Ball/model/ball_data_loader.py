@@ -1,5 +1,5 @@
 import random
-from codes.common_utils import del_file
+from common_utils import del_file
 import torch
 import numpy as np
 import os
@@ -11,15 +11,14 @@ def load_a_img_seq_with_position_from_disk(seq_path):
     img_path_list = os.listdir(seq_path)
     img_path_list.sort(key=name_in_int)
     img_list = []
-    position_list = []
     transform = transforms.Compose([transforms.ToTensor()])
     for i in img_path_list:
         img = Image.open(seq_path + '/' + i).convert('RGB')
         img_tensor = transform(img)
         img_list.append(img_tensor)
-        position = [torch.tensor(float(num), dtype=torch.float) for num in i.split('[')[1].split(']')[0].split(',')]
-        position_list.append(torch.stack(position, dim=0))
-    return torch.stack(img_list, dim=0), torch.stack(position_list, dim=0)
+    return torch.stack(img_list, dim=0), torch.zeros((
+        len(img_list), 3, 
+    ))
 
 
 def name_in_int(elem):
@@ -39,7 +38,7 @@ def load_a_img_seq_from_disk(seq_path):
 
 
 class BallDataLoader:
-    def __init__(self, data_path='Ball3DImg/120_80_0.2_20/', is_load_all_data_dict=False):
+    def __init__(self, data_path='../dataset/32_32_1_20_first/', is_load_all_data_dict=False):
         self.data_path = data_path
         self.f_list = os.listdir(data_path)  # 返回文件名
         random.shuffle(self.f_list)

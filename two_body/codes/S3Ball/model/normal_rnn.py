@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 import gzip
-from codes.S3Ball.symmetry import make_rotation_Y_batch, make_translation_batch
+from symmetry import make_rotation_Y_batch, make_translation_batch
 
 # todo: make these parameters configurable
 BATCH_SIZE = 32
@@ -16,8 +16,8 @@ LAST_W = 4
 FIRST_CH_NUM = 64
 LAST_CN_NUM = FIRST_CH_NUM * 4
 
-RNN_INPUT_SIZE = 3
-RNN_OUT_FEATURES = 3
+RNN_INPUT_SIZE = 6
+RNN_OUT_FEATURES = 6
 
 
 class Conv2dGruConv2d(nn.Module):
