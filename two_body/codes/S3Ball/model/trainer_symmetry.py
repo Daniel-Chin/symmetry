@@ -9,7 +9,7 @@ import os
 from normal_rnn import Conv2dGruConv2d, BATCH_SIZE, LAST_CN_NUM, LAST_H, \
     LAST_W
 from ball_data_loader import BallDataLoader
-from symmetry import make_translation_batch, make_rotation_Y_batch, do_seq_symmetry, symm_trans, symm_rotaY
+from symmetry import make_translation_batch, make_rotation_batch, do_seq_symmetry, symm_trans, symm_rota
 from loss_counter import LossCounter
 
 from common_utils import create_results_path_if_not_exist
@@ -211,8 +211,7 @@ class BallTrainer:
             R_sample_points = self.gen_sample_points(self.base_len, data.size(1), i, self.enable_sample)
             z_gt, mu, logvar = self.batch_seq_encode_to_z(data)
             T, Tr = make_translation_batch(batch_size=BATCH_SIZE * self.t_batch_multiple, t_range=self.t_range)
-            R, Rr, theta = make_rotation_Y_batch(batch_size=BATCH_SIZE * self.r_batch_multiple,
-                                                 angel_range=self.r_range)
+            R, Rr = make_rotation_batch(batch_size=BATCH_SIZE * self.r_batch_multiple)
             z0_rnn = self.predict_with_symmetry(z_gt, I_sample_points, lambda z: z)
             vae_loss = self.calc_vae_loss(data, z_gt, mu, logvar, recon_list)
             rnn_loss = self.calc_rnn_loss(data[:, 1:, :, :, :], z_gt, z0_rnn, recon_list)
@@ -222,7 +221,7 @@ class BallTrainer:
             )
             R_loss = self.batch_symm_loss(
                 z_gt, z0_rnn, R_sample_points, self.r_batch_multiple,
-                lambda z: symm_rotaY(z, R), lambda z: symm_rotaY(z, Rr)
+                lambda z: symm_rota(z, R), lambda z: symm_rota(z, Rr)
             )
             loss = self.loss_func(vae_loss, rnn_loss, T_loss, R_loss, train_loss_counter)
             loss.backward()
@@ -230,7 +229,12 @@ class BallTrainer:
             scheduler.step()
 
             if is_log:
-                self.model.save_tensor(self.model.state_dict(), self.model_path)
+                try:
+                    self.model.save_tensor(self.model.state_dict(), self.model_path)
+                except KeyboardInterrupt:
+                    print('Safety qp3948htfaw')
+                    self.model.save_tensor(self.model.state_dict(), self.model_path)
+                    raise
                 print(train_loss_counter.make_record(i))
                 train_loss_counter.record_and_clear(self.train_record_path, i)
                 self.save_result_imgs(recon_list, f'{i}_{str(I_sample_points)}', z_gt.size(1) - 1)

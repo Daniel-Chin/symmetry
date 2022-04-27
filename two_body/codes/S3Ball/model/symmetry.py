@@ -4,6 +4,7 @@ import time
 
 import torch
 import numpy as np
+import scipy.spatial
 
 ROTATION = 'Rot'
 TRANSLATION = 'Trs'
@@ -43,21 +44,13 @@ def rand_rotation_Y(angel_range=(-0.25 * math.pi, 0.25 * math.pi)):
     return torch.from_numpy(s).to(torch.float32), torch.from_numpy(s_r).to(torch.float32), theta
 
 
-def make_rotation_Y_batch(batch_size, angel_range=(-0.25 * math.pi, 0.25 * math.pi)):
-    scale = angel_range[1] - angel_range[0]
-    theta = torch.rand(batch_size) * scale + angel_range[0]
-    s = torch.stack([
-        torch.stack([torch.cos(theta), torch.zeros(batch_size), -torch.sin(theta)], dim=0),
-        torch.stack([torch.zeros(batch_size), torch.ones(batch_size), torch.zeros(batch_size)], dim=0),
-        torch.stack([torch.sin(theta), torch.zeros(batch_size), torch.cos(theta)], dim=0)
-    ], dim=0).permute(2, 0, 1).contiguous()
-    s_r = torch.stack([
-        torch.stack([torch.cos(-theta), torch.zeros(batch_size), -torch.sin(-theta)], dim=0),
-        torch.stack([torch.zeros(batch_size), torch.ones(batch_size), torch.zeros(batch_size)], dim=0),
-        torch.stack([torch.sin(-theta), torch.zeros(batch_size), torch.cos(-theta)], dim=0)
-    ], dim=0).permute(2, 0, 1).contiguous()
-    return s, s_r, theta.numpy()
+def make_rotation_batch(batch_size):
+    rots = scipy.spatial.transform.Rotation.random(batch_size)
 
+    return (
+        torch.from_numpy(rots.      as_matrix()).float(), 
+        torch.from_numpy(rots.inv().as_matrix()).float(), 
+    )
 
 def make_translation_batch(batch_size, dim=np.array([1, 0, 1]), is_std_normal=False, t_range=(-1, 1)):
     scale = t_range[1] - t_range[0]
@@ -70,7 +63,7 @@ def make_translation_batch(batch_size, dim=np.array([1, 0, 1]), is_std_normal=Fa
     return T, T_R
 
 
-# def make_rotation_Y_batch(batch_size, angel_range=(-0.25 * math.pi, 0.25 * math.pi)):
+# def make_rotation_batch(batch_size, angel_range=(-0.25 * math.pi, 0.25 * math.pi)):
 #     R_batch = []
 #     Rr_batch = []
 #     theta_batch = []
@@ -95,18 +88,12 @@ def make_rand_zoom_batch(batch_size, z_range=((0.3, 1.5), (1., 1.), (0.3, 1.5)))
 
 
 def symm_trans(z, transer: torch.Tensor):
-    # z.shape is (128, 6)
-    return z + transer.repeat(1, 2)
+    # z.shape is (128, 3)
+    return z + transer
 
 
-def symm_rotaY(z, rotator):
-    Z_R = []
-    for i in (0, 3):
-        Z_R.append(torch.matmul(
-            z[:, i:i+3].unsqueeze(1), rotator, 
-        ).squeeze(1))
-    return torch.concat(Z_R, dim=1)
-
+def symm_rota(z, rotator):
+    return torch.matmul(z.unsqueeze(1), rotator).squeeze(1)
 
 def symm_zoom(z, zoomer):
     return z * zoomer
@@ -122,11 +109,11 @@ def do_seq_symmetry(z, symm_func):
 
 if __name__ == "__main__":
     t1 = time.time()
-    s, s_r, theta = make_rotation_Y_batch(4096, angel_range=(-math.pi, math.pi))
+    s, s_r = make_rotation_batch(4096)
     for i in range(0, 100):
         a = torch.rand(4096, 3)
-        a_s = symm_rotaY(a, s)
-        a_s_sr = symm_rotaY(a_s, s_r)
+        a_s = symm_rota(a, s)
+        a_s_sr = symm_rota(a_s, s_r)
         print(a - a_s_sr)
     t2 = time.time()
     print(t2 - t1)

@@ -25,8 +25,8 @@ MODE_OBV_ONLY = 'obv_only'
 MODE_MAKE_IMG = 'make_img'
 
 # RUNNING_MODE = MODE_LOCATE
-# RUNNING_MODE = MODE_OBV_ONLY
-RUNNING_MODE = MODE_MAKE_IMG
+RUNNING_MODE = MODE_OBV_ONLY
+#RUNNING_MODE = MODE_MAKE_IMG
 
 VIEW = np.array([-0.8, 0.8, -0.8, 0.8, 1.0, 30.0])  # 视景体的left/right/bottom/top/near/far六个面
 SCALE_K = np.array([1.0, 1.0, 1.0])  # 模型缩放比例

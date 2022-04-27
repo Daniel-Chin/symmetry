@@ -2,7 +2,7 @@ import math
 
 CONFIG = {
     'train_data_path': '../dataset/32_32_1_20_first/',
-    'latent_code_num': 6,
+    'latent_code_num': 3,
     't_batch_multiple': 4,
     'r_batch_multiple': 4,
     't_range': (-1, 1),

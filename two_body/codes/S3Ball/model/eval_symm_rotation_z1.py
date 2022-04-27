@@ -35,10 +35,10 @@ if __name__ == "__main__":
     r3 = make_a_ndarray_batch(rota_Y(a3)[0], BATCH_SIZE)
     r4 = make_a_ndarray_batch(rota_Y(a4)[0], BATCH_SIZE)
 
-    data_symm_trans_1 = evaler.predict_with_symmerty(z_gt, BASE_LEN, lambda z: symm.symm_rotaY(z, r1))
-    data_symm_trans_2 = evaler.predict_with_symmerty(z_gt, BASE_LEN, lambda z: symm.symm_rotaY(z, r2))
-    data_symm_trans_3 = evaler.predict_with_symmerty(z_gt, BASE_LEN, lambda z: symm.symm_rotaY(z, r3))
-    data_symm_trans_4 = evaler.predict_with_symmerty(z_gt, BASE_LEN, lambda z: symm.symm_rotaY(z, r4))
+    data_symm_trans_1 = evaler.predict_with_symmerty(z_gt, BASE_LEN, lambda z: symm.symm_rota(z, r1))
+    data_symm_trans_2 = evaler.predict_with_symmerty(z_gt, BASE_LEN, lambda z: symm.symm_rota(z, r2))
+    data_symm_trans_3 = evaler.predict_with_symmerty(z_gt, BASE_LEN, lambda z: symm.symm_rota(z, r3))
+    data_symm_trans_4 = evaler.predict_with_symmerty(z_gt, BASE_LEN, lambda z: symm.symm_rota(z, r4))
 
     data_list = [data_symm_trans_1, data_symm_trans_2, gt_data, data_symm_trans_3, data_symm_trans_4]
     title_list = [

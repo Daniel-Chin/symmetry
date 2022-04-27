@@ -27,18 +27,39 @@
         run linear regression z -> ball_pos
         look at r-squared
 }
-next {
+4/20 {
     two body:
         两个球半径一样？
             不一样？ encoder 无法区分半径和远近。
+            let's make them the same. 
         z
             x1, y1, z1, x2, y2, z2
             the color needs to be different, otherwise encoder doesn't know which is which
-        instead of reconstruction, use joint embedding? 
-            predict z?
-                then RNN can be kept. 
-                Use VICREG to avoid collapse
-                    or, use my adverserial VAE
-            don't predict z? 
-                probably need negative pairs of z?
+        实验结果
+            模拟
+            预测
+            解耦
+    JEPA slides
+}
+4/22 {
+    pretrain 单球， finetune 双体， 能否解耦双球坐标？
+}
+4/27 {
+    糟糕，双体 DoF 只有 3, 因为质心固定。
+        vary 质心？
+        6 -> 3? 
+        Gus: 6 -> 3
+    极坐标不符合对称性规约?
+        仅当起抛点固定时， 符合
+    RNN 的弱性
+        需要
+    两点：
+        datapoints 受对称性规约
+        generalization (interpolation)
+            如果不行， 那就是得每个位置的球都见过？
+        try cycle
+}
+next {
+    cycle consistency:
+        decoder 不变， encoder 变差
 }

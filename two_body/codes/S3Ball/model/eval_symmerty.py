@@ -83,17 +83,17 @@ class SeqEval:
         create_results_path_if_not_exist(RESULT_PATH)
         data = self.data_loader.load_a_batch_of_random_img_seq(BATCH_SIZE)
         T, Tr = symm.make_translation_batch(batch_size=BATCH_SIZE, is_std_normal=True)
-        R, Rr, theta = symm.make_rotation_Y_batch(batch_size=BATCH_SIZE)
+        R, Rr = symm.make_rotation_batch(batch_size=BATCH_SIZE)
         z_gt = self.batch_seq_encode_to_z(data)
         data_gt = self.predict_with_symmerty(z_gt, BASE_LEN, lambda z: z)
         data_gt[1] = data[:, 1:, :, :, :]
         data_symm_trans = self.predict_with_symmerty(z_gt, BASE_LEN, lambda z: symm.symm_trans(z, T))
-        data_symm_rota = self.predict_with_symmerty(z_gt, BASE_LEN, lambda z: symm.symm_rotaY(z, R))
+        data_symm_rota = self.predict_with_symmerty(z_gt, BASE_LEN, lambda z: symm.symm_rota(z, R))
         data_list = [data_gt, data_symm_trans, data_symm_rota]  # col X data_type X batch
         title_list = [
             ["Ground Truth & Prediction" for i in range(BATCH_SIZE)],
             [f'Translation: {np.around(t.cpu().numpy(), 3)}' for t in T],
-            [f'Rotation Angle: {round(r/math.pi*180, 3)}°' for r in theta]
+            [f'Rotation Angle: None' for i in range(BATCH_SIZE)]
         ]
         plot_batch(data_list, title_list, result_path=RESULT_PATH)
 
