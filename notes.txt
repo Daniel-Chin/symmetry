@@ -59,7 +59,17 @@
             如果不行， 那就是得每个位置的球都见过？
         try cycle
 }
+4/29 {
+    loss 不应该除以 T 和 R
+    RNN 预测应该跳过前三帧
+}
 next {
     cycle consistency:
         decoder 不变， encoder 变差
+    有了 recon 也不一定就 不 collapse. 
+        估计是为什么 xuanjie 在图片上作 loss 而不是 z 上。
+}
+
+archive {
+    有些结， 升一维就能解开。 暂时升一维， 等会儿降回来？
 }
