@@ -53,8 +53,8 @@
         仅当起抛点固定时， 符合
     RNN 的弱性
         需要
-    两点：
-        datapoints 受对称性规约
+    两点目标：
+        datapoints 的 z 受对称性规约
         generalization (interpolation)
             如果不行， 那就是得每个位置的球都见过？
         try cycle
@@ -63,11 +63,25 @@
     loss 不应该除以 T 和 R
     RNN 预测应该跳过前三帧
 }
-next {
+5/4{
     cycle consistency:
         decoder 不变， encoder 变差
-    有了 recon 也不一定就 不 collapse. 
-        估计是为什么 xuanjie 在图片上作 loss 而不是 z 上。
+    slides/2d_rnn
+        其中：
+        有了 recon 也不一定就 不 collapse. 
+            估计是为什么 xuanjie 在图片上作 loss 而不是 z 上。
+    continue pyxuanjie on hpc, disentangle
+        怎么和周五说的不一样
+    ask yann / alf / cho
+        for RNN, GRU, 
+            besides hidden_dim, any other way to control its capacity? 
+        what do you think of VRNN
+}
+next {
+    VAE 需要数据多点
+        我不确定这样做会不会有用
+        测试 data efficiency 时， 能不能： 总图片数不变， sequence 数减少？
+        用不成视频的图片训练 vae. 
 }
 
 archive {
