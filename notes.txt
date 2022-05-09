@@ -82,6 +82,11 @@ next {
         我不确定这样做会不会有用
         测试 data efficiency 时， 能不能： 总图片数不变， sequence 数减少？
         用不成视频的图片训练 vae. 
+    how to limit RNN/GRU?
+        https://campuswire.com/c/GCEF8E4E7/feed/312
+    pitch:
+        one-hot vs one-dim
+        both can translate!
 }
 
 archive {
