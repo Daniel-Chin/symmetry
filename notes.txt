@@ -82,11 +82,54 @@ next {
         我不确定这样做会不会有用
         测试 data efficiency 时， 能不能： 总图片数不变， sequence 数减少？
         用不成视频的图片训练 vae. 
+    y is completely noy regularized! 
+        many times, x and z are good, but y is piece-wise, and correlated with x, y. 
+        VAE+RNN without symmetry can also provide piece-wise, almost-linear z space. 
     how to limit RNN/GRU?
         https://campuswire.com/c/GCEF8E4E7/feed/312
     pitch:
         one-hot vs one-dim
         both can translate!
+    AE + symm 几乎总是会崩。 
+        decoder gives rubbish when traversing z space. 
+        但是 reconstruction 和预测都是好的。
+        说明 overfit 非常严重， z space 只有寥寥几个点是正常的小球图片。
+    为何 altitude ~ 0 的时候图片是糊的？ 未解之谜。
+        it is very consistent. 
+    看实验
+        epoch_206000
+}
+6/1 {
+    vvrnn
+    vvrnn_static
+    rnn_min_context
+    z_pred_loss_coef
+    试一试 平移 和 旋转 分开加
+        T R TR I
+    grad clip
+        xuanjie: 
+            1. early-stop before grad explosion
+            2. diminishing lr
+}
+6/15 {
+    note to self: if accidentally getting a fast GPU make you waste res, specify early stopping in code. 
+}
+6/16 {
+    plot 1000-epoch loss average
+}
+6/18 {
+    2080Ti: good to go. 
+    According to loss plots, overfit happens around 2h of training. 
+    神奇！ TR 就会预测不行， T+R 就会更好。
+}
+6/23 {
+    stochastic TRI
+        previously: every batch does a number of T+R+TR+I. Diff experiment groups will have diff # of trajectories because of this. 
+        Now: stochastically sample one tranformation from the TRI spectification. # of trajs is thus controlled across groups. 
+}
+next {
+    try BCE instead of MSE
+        maybe replace tanh with sigmoid
 }
 
 archive {
