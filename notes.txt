@@ -126,6 +126,8 @@ next {
     stochastic TRI
         previously: every batch does a number of T+R+TR+I. Diff experiment groups will have diff # of trajectories because of this. 
         Now: stochastically sample one tranformation from the TRI spectification. # of trajs is thus controlled across groups. 
+    TRI_5
+        the loss still jumps up from time to time! Why? already grad clip. 
 }
 next {
     try BCE instead of MSE
