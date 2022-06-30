@@ -129,6 +129,27 @@ next {
     TRI_5
         the loss still jumps up from time to time! Why? already grad clip. 
 }
+6/28 {
+    grad_clip
+        0.02 looks good. 
+        Note, this conclusion will change if we change the loss to BCE
+        okay, let's do this again. lower grad clip gives faster overfitting???
+        Note: grad_clip=1 explosion at EPOCH 72053. 
+}
+6/29 {
+    It seems the consensus is low LR (in my case, low grad clip) leads to higher risk of overfitting. 
+        Super-Convergence: Very Fast Training of Neural Networks Using Large Learning Rates (Smith & Topin 2018)
+        My take: Higher stochasticity may help jump out of high local minima. 
+    meeting, discuss with Xuanjie
+        I:T = 1:13 变成 0:13
+        Cycle consistency doesn't help?
+}
+6/30 {
+    grad_clip_3
+        grad_clip = 0.03 seems good. 
+        0.01: too much overfit
+        0.1: sometimes jumps. However, does not look like resets the training progress. 
+}
 next {
     try BCE instead of MSE
         maybe replace tanh with sigmoid
