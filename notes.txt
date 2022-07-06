@@ -150,6 +150,12 @@ next {
         0.01: too much overfit
         0.1: sometimes jumps. However, does not look like resets the training progress. 
 }
+7/6 {
+    trying to also print training set pred images. 
+        I'm facing overfit. 
+        If training pred looks good, then I should make RNN smaller, to avoid overfitting. 
+        If training pred looks bad, then RNN should be more powerful. 
+}
 next {
     try BCE instead of MSE
         maybe replace tanh with sigmoid
