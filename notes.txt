@@ -155,6 +155,32 @@ next {
         I'm facing overfit. 
         If training pred looks good, then I should make RNN smaller, to avoid overfitting. 
         If training pred looks bad, then RNN should be more powerful. 
+    reverb 导致不加对称性也能一维音高
+}
+7/8 {
+    TRI_8
+        Training image pred indeed looks much better than validation. Training image pred looks like they succesfully predict. 
+        This is surprising. Randomly augmented training set is fit, but validation set is not. Something about augmenting known paths is still weak such that the NNs can overfit. 
+        Now that we know it's overfitting, decrease rnn strenth? vae strength?
+        trying increasing beta. 
+}
+7/12 {
+    beta_2
+        results are weird, but according to vali loss, 1e-5 seems fine. 
+}
+7/13 {
+    vae_complexity_2
+        No significant difference! 
+            Maybe, VAE size doesn't matter. 
+            Maybe, we haven't sufficiently weakened VAE. 
+            But! Junyan said sometimes bigger networks will overfit later (虽然久了之后会更 worse)
+            Conclusion: let's leave VAE for now, and cripple RNN. Observe whether image pred overfit changes. 
+}
+7/14 {
+    Junyan was right. bigger network -> later overfit -> best epoch has lower validation loss than smaller netowkrs. 
+    However, validaiton minimum-loss epoch is not the best recon epoch. later epochs are better, when using evalDecoder. 
+        We need a repr metric to tune hyperparameters. 
+    Right now, I want to make gigantice networks and predict images well for once. 
 }
 next {
     try BCE instead of MSE
