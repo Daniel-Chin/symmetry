@@ -1,0 +1,204 @@
+Instrument Glockenspiel:
+mean_diff: 2.173485517501831
+std: 1.4389913082122803
+
+Instrument Horn:
+mean_diff: 0.18709799647331238
+std: 0.7431782484054565
+
+Instrument Clarinet:
+mean_diff: 0.19988693296909332
+std: 0.8740444183349609
+
+Instrument Trombone:
+mean_diff: 0.19635364413261414
+std: 0.6421090960502625
+
+Instrument Harp:
+mean_diff: 0.20196403563022614
+std: 0.7791659832000732
+
+Instrument Harpsichord:
+mean_diff: 0.20120730996131897
+std: 0.9485450983047485
+
+Instrument Electric Guitar:
+mean_diff: 0.7988762259483337
+std: 0.7149394750595093
+
+Instrument Electric Organ:
+mean_diff: 0.03139742836356163
+std: 0.4747902452945709
+
+Instrument Organ:
+mean_diff: 0.20044606924057007
+std: 0.7296169996261597
+
+Instrument Sampler:
+mean_diff: 0.3536204397678375
+std: 0.32695600390434265
+
+Instrument Celesta:
+mean_diff: 0.20357604324817657
+std: 0.944148063659668
+
+Instrument Shakuhachi:
+mean_diff: 0.2039078325033188
+std: 1.0692909955978394
+
+Instrument Pan Flute:
+mean_diff: 0.1853911280632019
+std: 0.9784131050109863
+
+Instrument Clavichord:
+mean_diff: 0.20248828828334808
+std: 0.9352102875709534
+
+Instrument Bassoon:
+mean_diff: 0.1864316612482071
+std: 0.2089490294456482
+
+Instrument Saxophone:
+mean_diff: 0.20099405944347382
+std: 0.3712291419506073
+
+Instrument Sitar:
+mean_diff: 0.2931836247444153
+std: 0.6590307950973511
+
+Instrument Violin:
+mean_diff: 0.1875670850276947
+std: 0.6943040490150452
+
+Instrument Shamisen:
+mean_diff: 0.0096250269562006
+std: 0.4598489999771118
+
+Instrument Viola:
+mean_diff: 0.1986730992794037
+std: 0.6654849648475647
+
+Instrument Timpani:
+mean_diff: 0.6048886179924011
+std: 0.7042869925498962
+
+Instrument Mandolin:
+mean_diff: 0.21654003858566284
+std: 0.8926498889923096
+
+Instrument Flute:
+mean_diff: 0.2102612406015396
+std: 0.8006532788276672
+
+Instrument Koto:
+mean_diff: 0.19324351847171783
+std: 0.7344840168952942
+
+Instrument Marimba:
+mean_diff: 0.19677428901195526
+std: 0.9275248050689697
+
+Instrument Guitar:
+mean_diff: 0.20910008251667023
+std: 0.4369908571243286
+
+Instrument Soprano Saxophone:
+mean_diff: 0.19702956080436707
+std: 0.7290363907814026
+
+Instrument Dulcimer:
+mean_diff: 0.28096646070480347
+std: 0.502627968788147
+
+Instrument Church Bells:
+mean_diff: 0.19238217175006866
+std: 0.7119148373603821
+
+Instrument Recorder:
+mean_diff: 0.20118752121925354
+std: 0.7431143522262573
+
+Instrument Electric Piano:
+mean_diff: 0.19821028411388397
+std: 0.9414463043212891
+
+Instrument Electric Bass:
+mean_diff: 0.19018122553825378
+std: 0.5687060952186584
+
+Instrument Xylophone:
+mean_diff: 0.1718790978193283
+std: 0.9338624477386475
+
+Instrument Trumpet:
+mean_diff: 0.1952856481075287
+std: 0.749650776386261
+
+Instrument Oboe:
+mean_diff: 0.19198007881641388
+std: 0.9321929812431335
+
+Instrument Piano:
+mean_diff: 0.2020999789237976
+std: 0.9309160709381104
+
+Instrument Shehnai:
+mean_diff: 0.623221218585968
+std: 0.6008419990539551
+
+Instrument Banjo:
+mean_diff: 0.21146847307682037
+std: 0.7228747010231018
+
+Instrument Kalimba:
+mean_diff: 0.18663422763347626
+std: 0.9483608603477478
+
+Instrument Lute:
+mean_diff: 0.20910008251667023
+std: 0.4329259395599365
+
+Instrument Acoustic Bass:
+mean_diff: 0.3286961317062378
+std: 1.0231645107269287
+
+Instrument Harmonica:
+mean_diff: 0.19307474792003632
+std: 0.9555554389953613
+
+Instrument Reed Organ:
+mean_diff: 0.20079389214515686
+std: 0.7618494033813477
+
+Instrument Steel Drum:
+mean_diff: 0.2057989537715912
+std: 1.0118504762649536
+
+Instrument Ocarina:
+mean_diff: 0.1836196929216385
+std: 0.9562121629714966
+
+Instrument Accordion:
+mean_diff: 0.20507535338401794
+std: 0.93411785364151
+
+Instrument Whistle:
+mean_diff: 0.20484870672225952
+std: 0.8226405382156372
+
+Instrument Violoncello:
+mean_diff: 0.18799608945846558
+std: 0.8782055974006653
+
+Instrument Vibraphone:
+mean_diff: 0.19333361089229584
+std: 0.9449897408485413
+
+Instrument Piccolo:
+mean_diff: 0.19617770612239838
+std: 1.0543862581253052
+
+
+diff mean is 0.26796042919158936
+STD is 0.8756358623504639
+mean_diff / pitch_std = 0.3060181140899658
