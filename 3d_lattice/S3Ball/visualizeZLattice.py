@@ -15,7 +15,7 @@ HEADING_ROW_HEIGHT = 0.3
 FONT = ImageFont.truetype("verdana.ttf", 24)
 
 RAND_INIT_TIMES = 1
-EXPERIMENTS = ['xjMethod']
+EXPERIMENTS = ['xjMethod', 'xjMethod']
 
 def main():
     frame_width_height = (
@@ -60,6 +60,7 @@ def visualizeOneEpoch(epoch, vidOut, frame_width_height):
                 N_CURVE_VERTICES, 
                 N_LATENT_DIM, 
             ))
+            print(filename)
             with open(filename, 'r') as f:
                 c = csv.reader(f)
                 next(c)
@@ -96,30 +97,32 @@ def textCell(imDraw, text, col_i, row_i):
 def drawCell(imDraw, zLattice, col_i, row_i):
     x_offset = CELL_RESOLUTION * col_i
     y_offset = CELL_RESOLUTION * row_i
-    for curve_i in range(N_CURVES):
-        for curve_j in range(N_CURVES):
+    step = N_CURVE_SEGMENTS // (N_CURVES - 1)
+    for curve_i in range(0, N_CURVE_SEGMENTS, step):
+        # print('curve_i', curve_i)
+        for curve_j in range(0, N_CURVE_SEGMENTS, step):
             z_segs = (
                 zLattice[:, curve_i, curve_j, :], 
                 zLattice[curve_i, :, curve_j, :], 
                 zLattice[curve_i, curve_j, :, :], 
             )
             for z_seg, color in zip(z_segs, ('red', 'green', 'blue')):
-                imDraw.line(
-                    [
-                        (
-                            rasterize(
-                                z_seg[i, 0].item(), 
-                                4, CELL_RESOLUTION, 
-                            ) + x_offset, 
-                            rasterize(
-                                z_seg[i, 1].item(), 
-                                4, CELL_RESOLUTION, 
-                            ) + y_offset, 
-                        ) 
-                        for i in range(N_CURVE_VERTICES)
-                    ], 
-                    color, 
-                )
+                coords = []
+                for i in range(N_CURVE_VERTICES):
+                    x = z_seg[i, 0].item()
+                    y = z_seg[i, 1].item()
+                    z = z_seg[i, 2].item()
+                    x += z * .5
+                    y += z * .5
+                    coords.append((
+                        rasterize(
+                            x, 3, CELL_RESOLUTION, 
+                        ) + x_offset, 
+                        rasterize(
+                            y, 3, CELL_RESOLUTION, 
+                        ) + y_offset, 
+                    ))
+                imDraw.line(coords, color)
 
 def rasterize(x, x_radius, resolution):
     return round((x + x_radius) / (
