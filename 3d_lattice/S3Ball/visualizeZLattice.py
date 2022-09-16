@@ -1,5 +1,6 @@
 from os import path
 from itertools import count
+import csv
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
@@ -24,48 +25,64 @@ def main():
         )), 
     )
     vidOut = cv2.VideoWriter(
-        'evalZ.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 
+        'zLattice.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 
         5, frame_width_height, 
     )
     try:
-        for epoch in count(0, EPOCH_INTERVAL):
-            evalOneEpoch(
-                epoch, eval_data, vidOut, frame_width_height, 
+        for epoch in count(CHECKPOINT_INTERVAL, CHECKPOINT_INTERVAL):
+            visualizeOneEpoch(
+                epoch, vidOut, frame_width_height, 
             )
     except StopIteration:
         print('total epoch', epoch)
     vidOut.release()
     print('written to MP4.')
 
-def evalOneEpoch(epoch, eval_data, vidOut, frame_width_height):
+def visualizeOneEpoch(epoch, vidOut, frame_width_height):
     frame = Image.new('RGB', frame_width_height)
     imDraw = ImageDraw.Draw(frame)
     textCell(
         imDraw, f'{epoch=}', 1, HEADING_ROW_HEIGHT * .2, 
     )
-    for exp_i, (name, config) in enumerate(EXPERIMENTS):
+    for exp_i, exp_name in enumerate(EXPERIMENTS):
         textCell(
-            imDraw, name, 
+            imDraw, exp_name, 
             exp_i + .5, HEADING_ROW_HEIGHT * .5, 
         )
         for rand_init_i in range(RAND_INIT_TIMES):
-            vae = VAE(config.deep_spread)
-            try:
-                vae.load_state_dict(torch.load(path.join(
-                    renderExperimentPath(
-                        rand_init_i, config, 
-                    ), f'{epoch}_vae.pt', 
-                )))
-            except FileNotFoundError:
+            filename = path.join(ZLATTICE_PATH, f'{epoch}.csv')
+            if not path.isfile(filename):
                 print('epoch', epoch, 'not found.')
                 raise StopIteration
-            vae.eval()
-            with torch.no_grad():
-                z, _ = vae.encode(eval_data)
-                drawCell(
-                    imDraw, z, exp_i, 
-                    rand_init_i + HEADING_ROW_HEIGHT, 
-                )
+            zLattice = torch.zeros((
+                N_CURVE_VERTICES, 
+                N_CURVE_VERTICES, 
+                N_CURVE_VERTICES, 
+                N_LATENT_DIM, 
+            ))
+            with open(filename, 'r') as f:
+                c = csv.reader(f)
+                next(c)
+                for x_i in range(N_CURVE_VERTICES):
+                    for y_i in range(N_CURVE_VERTICES):
+                        for z_i in range(N_CURVE_VERTICES):
+                            x_i, y_i, z_i, z0, z1, z2 = next(c)
+                            x_i = int(x_i)
+                            y_i = int(y_i)
+                            z_i = int(z_i)
+                            zLattice[x_i, y_i, z_i, 0] = float(z0)
+                            zLattice[x_i, y_i, z_i, 1] = float(z1)
+                            zLattice[x_i, y_i, z_i, 2] = float(z2)
+                try:
+                    next(c)
+                except StopIteration:
+                    pass
+                else:
+                    raise Exception('CSV longer than expected.')
+            drawCell(
+                imDraw, zLattice, exp_i, 
+                rand_init_i + HEADING_ROW_HEIGHT, 
+            )
     vidOut.write(cv2.cvtColor(
         np.asarray(frame), cv2.COLOR_BGR2RGB, 
     ))
@@ -76,69 +93,37 @@ def textCell(imDraw, text, col_i, row_i):
         row_i * CELL_RESOLUTION, 
     ), text, font=FONT, anchor='mm')
 
-def drawCell(imDraw, z, col_i, row_i):
+def drawCell(imDraw, zLattice, col_i, row_i):
     x_offset = CELL_RESOLUTION * col_i
     y_offset = CELL_RESOLUTION * row_i
-    for curve_i in range(N_CURVES * 2):
-        z_seg = z[
-            n_curve_vertices * curve_i : 
-            n_curve_vertices * (curve_i + 1), 
-            :
-        ]
-        imDraw.line(
-            [
-                (
-                    rasterize(
-                        z_seg[i, 0].item(), 
-                        4, CELL_RESOLUTION, 
-                    ) + x_offset, 
-                    rasterize(
-                        z_seg[i, 1].item(), 
-                        4, CELL_RESOLUTION, 
-                    ) + y_offset, 
-                ) 
-                for i in range(n_curve_vertices)
-            ], 
-            ('red', 'green')[curve_i % 2], 
-        )
-
-def genEvalData():
-    n_datapoints = N_CURVES * n_curve_vertices * 2
-    eval_data = torch.zeros(
-        n_datapoints, 1, 
-        RESOLUTION, RESOLUTION, 
-    )
-    z_truth = torch.zeros(n_datapoints, 2)
-    X = []
-    Y = []
     for curve_i in range(N_CURVES):
-        curve_pos = (
-            curve_i / (N_CURVES - 1) - .5
-        ) * 2 * EVAL_RADIUS
-        for vertex_i in range(n_curve_vertices):
-            vertex_pos = ((
-                vertex_i / N_CURVE_SEGMENTS - .5
-            ) * 2 * EVAL_RADIUS)
-
-            data_i = (2 * curve_i    ) * n_curve_vertices + vertex_i
-            eval_data[data_i, 0, :, :] = img2Tensor(
-                drawBall(curve_pos, vertex_pos), 
+        for curve_j in range(N_CURVES):
+            z_segs = (
+                zLattice[:, curve_i, curve_j, :], 
+                zLattice[curve_i, :, curve_j, :], 
+                zLattice[curve_i, curve_j, :, :], 
             )
-            z_truth[data_i, 0] = curve_pos
-            z_truth[data_i, 1] = vertex_pos
+            for z_seg, color in zip(z_segs, ('red', 'green', 'blue')):
+                imDraw.line(
+                    [
+                        (
+                            rasterize(
+                                z_seg[i, 0].item(), 
+                                4, CELL_RESOLUTION, 
+                            ) + x_offset, 
+                            rasterize(
+                                z_seg[i, 1].item(), 
+                                4, CELL_RESOLUTION, 
+                            ) + y_offset, 
+                        ) 
+                        for i in range(N_CURVE_VERTICES)
+                    ], 
+                    color, 
+                )
 
-            data_i = (2 * curve_i + 1) * n_curve_vertices + vertex_i
-            eval_data[data_i, 0, :, :] = img2Tensor(
-                drawBall(vertex_pos, curve_pos), 
-            )
-            z_truth[data_i, 0] = vertex_pos
-            z_truth[data_i, 1] = curve_pos
-
-            X.append(vertex_pos)
-            Y.append(curve_pos)
-    print('# of eval points:', n_datapoints)
-    # plt.scatter(X, Y)
-    # plt.show()
-    return eval_data, z_truth
+def rasterize(x, x_radius, resolution):
+    return round((x + x_radius) / (
+        x_radius * 2
+    ) * resolution)
 
 main()

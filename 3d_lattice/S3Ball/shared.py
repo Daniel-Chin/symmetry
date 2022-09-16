@@ -1,6 +1,7 @@
 import numpy as np
 
 DATASET_PATH = './latticeDataset'
+CHECKPOINTS_PATH = './model/checkpoint_%d.pt'
 ZLATTICE_PATH = './zLattice'
 
 N_CURVES = 3 + 1
@@ -21,3 +22,5 @@ IMG_W = 32
 IMG_H = 32
 
 N_LATENT_DIM = 3
+
+CHECKPOINT_INTERVAL = 10000

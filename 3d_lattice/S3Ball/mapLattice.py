@@ -10,9 +10,6 @@ from model.normal_rnn import Conv2dGruConv2d, LAST_CN_NUM, LAST_H, LAST_W, IMG_C
 from model.train_config import CONFIG
 from shared import *
 
-CHECKPOINTS_PATH = './model/checkpoint_%d.pt'
-CHECKPOINT_INTERVAL = 10000
-
 device = torch.device("cpu")
 
 def loadNNs() -> List[Conv2dGruConv2d]:
@@ -21,7 +18,7 @@ def loadNNs() -> List[Conv2dGruConv2d]:
     while True:
         i += CHECKPOINT_INTERVAL
         checkpoint_path = CHECKPOINTS_PATH % i
-        if os.path.exists(checkpoint_path):
+        if os.path.isfile(checkpoint_path):
             model = Conv2dGruConv2d(CONFIG).to(device)
             model.eval()
             model.load_state_dict(torch.load(
@@ -71,14 +68,17 @@ def main():
     for i, nn in enumerate(nns):
         t = (i + 1) * CHECKPOINT_INTERVAL
         print('epoch', t)
-        out: Tensor = nn.encoder(dataset.view(DATASET_SIZE, 3, IMG_W, IMG_H))
-        mu: Tensor = nn.fc11(out.view(DATASET_SIZE, -1))
-        zLattice = mu.view(
-            N_CURVE_VERTICES, 
-            N_CURVE_VERTICES, 
-            N_CURVE_VERTICES, 
-            N_LATENT_DIM, 
-        )
+        with torch.no_grad():
+            out: Tensor = nn.encoder(dataset.view(
+                DATASET_SIZE, 3, IMG_W, IMG_H, 
+            ))
+            mu: Tensor = nn.fc11(out.view(DATASET_SIZE, -1))
+            zLattice = mu.view(
+                N_CURVE_VERTICES, 
+                N_CURVE_VERTICES, 
+                N_CURVE_VERTICES, 
+                N_LATENT_DIM, 
+            )
         with open(os.path.join(
             ZLATTICE_PATH, f'{t}.csv', 
         ), 'w', newline='') as f:
