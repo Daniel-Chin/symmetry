@@ -190,11 +190,7 @@ if __name__ == "__main__":
     # img_np = img_tensor.numpy()
     # print(img_tensor[1].max().item())
 
-    check_path = 'Ball3DImg/32_32_0.2_20_3_init_points_colorful_continue_evalset/'
+    check_path = 'Ball3DImg/32_32_0.2_20_3_init_points_subset_2048/'
     dc = BallDataLoader(check_path)
     dc.data_checker()
     dc.delete_traj_with_no_ball_imgs(is_delete=True)
-
-
-
-

@@ -244,7 +244,7 @@ todo {
     Paper!
         register openreview
         3D 破布展开 visualization, using Xuanjie method
-            todo: tweak X_LATTICE
+            todo: tweak X_RANGE
     supervised coord RNN
     remember:
         fix TRI

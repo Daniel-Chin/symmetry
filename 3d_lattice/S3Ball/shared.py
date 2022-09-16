@@ -1,13 +1,23 @@
 import numpy as np
 
 DATASET_PATH = './latticeDataset'
-X_LATTICE = np.linspace(-1, 1, 4)
-Y_LATTICE = np.linspace( 0, 2, 4)
-Z_LATTICE = np.linspace(0, 2, 4)
-X_LATTICE_LEN = len(X_LATTICE)
-Y_LATTICE_LEN = len(Y_LATTICE)
-Z_LATTICE_LEN = len(Z_LATTICE)
-DATASET_SIZE = X_LATTICE_LEN * Y_LATTICE_LEN * Z_LATTICE_LEN
+ZLATTICE_PATH = './zLattice'
+
+N_CURVES = 3 + 1
+N_CURVE_SEGMENTS = 12
+assert N_CURVE_SEGMENTS % (N_CURVES - 1) == 0
+N_CURVE_VERTICES = N_CURVE_SEGMENTS + 1
+
+X_RANGE = (-1, 1)
+Y_RANGE = ( 0, 2)
+Z_RANGE = ( 0, 2)
+
+X_LATTICE = np.linspace(*X_RANGE, N_CURVE_VERTICES)
+Y_LATTICE = np.linspace(*Y_RANGE, N_CURVE_VERTICES)
+Z_LATTICE = np.linspace(*Z_RANGE, N_CURVE_VERTICES)
+DATASET_SIZE = N_CURVE_VERTICES ** 3
 
 IMG_W = 32
 IMG_H = 32
+
+N_LATENT_DIM = 3

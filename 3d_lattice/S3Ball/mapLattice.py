@@ -1,9 +1,13 @@
+import os
+from typing import List
+import csv
+
+import torch
+from torch import Tensor
+from PIL import Image, ImageDraw, ImageFont
+
 from model.normal_rnn import Conv2dGruConv2d, LAST_CN_NUM, LAST_H, LAST_W, IMG_CHANNEL
 from model.train_config import CONFIG
-import os
-import torch
-from PIL import Image
-
 from shared import *
 
 CHECKPOINTS_PATH = './model/checkpoint_%d.pt'
@@ -11,7 +15,7 @@ CHECKPOINT_INTERVAL = 10000
 
 device = torch.device("cpu")
 
-def loadNNs():
+def loadNNs() -> List[Conv2dGruConv2d]:
     models = []
     i = 0
     while True:
@@ -32,16 +36,16 @@ def loadDataset():
     prev_cwd = os.getcwd()
     os.chdir(DATASET_PATH)
     dataset = torch.zeros((
-        X_LATTICE_LEN, 
-        Y_LATTICE_LEN, 
-        Z_LATTICE_LEN, 
+        N_CURVE_VERTICES, 
+        N_CURVE_VERTICES, 
+        N_CURVE_VERTICES, 
         3, 
         IMG_W, 
         IMG_H, 
     ))
-    for x_i in range(X_LATTICE_LEN):
-        for y_i in range(Y_LATTICE_LEN):
-            for z_i in range(Z_LATTICE_LEN):
+    for x_i in range(N_CURVE_VERTICES):
+        for y_i in range(N_CURVE_VERTICES):
+            for z_i in range(N_CURVE_VERTICES):
                 filename = f'{x_i}_{y_i}_{z_i}.png'
                 img = Image.open(filename)
                 torchImg = img2Tensor(img)
@@ -59,8 +63,37 @@ def img2Tensor(img):
     )
 
 def main():
+    print('load NN...')
     nns = loadNNs()
+    print('load dataset...')
     dataset = loadDataset()
+    os.makedirs(ZLATTICE_PATH, exist_ok=True)
+    for i, nn in enumerate(nns):
+        t = (i + 1) * CHECKPOINT_INTERVAL
+        print('epoch', t)
+        out: Tensor = nn.encoder(dataset.view(DATASET_SIZE, 3, IMG_W, IMG_H))
+        mu: Tensor = nn.fc11(out.view(DATASET_SIZE, -1))
+        zLattice = mu.view(
+            N_CURVE_VERTICES, 
+            N_CURVE_VERTICES, 
+            N_CURVE_VERTICES, 
+            N_LATENT_DIM, 
+        )
+        with open(os.path.join(
+            ZLATTICE_PATH, f'{t}.csv', 
+        ), 'w', newline='') as f:
+            c = csv.writer(f)
+            c.writerow(['x_i', 'y_i', 'z_i', 'z0', 'z1', 'z2'])
+            for x_i in range(N_CURVE_VERTICES):
+                for y_i in range(N_CURVE_VERTICES):
+                    for z_i in range(N_CURVE_VERTICES):
+                        z = zLattice[x_i, y_i, z_i, :]
+                        c.writerow([
+                            x_i, y_i, z_i, 
+                            z[0].item(), 
+                            z[1].item(), 
+                            z[2].item(), 
+                        ])
 
 if __name__ == "__main__":
     main()

@@ -60,9 +60,8 @@ def init_ball_color():
     sample_list = list(filter(lambda point: point[ENABLE], BALL_INITIAL_COLOR))
     color_range = random.sample(sample_list, 1)[0][COLOR3F]
     color = [random_in_range(r) for r in color_range]
-    print(color)
+    print('color', color)
     return color
-
 
 def make_dirs_if_need():
     if RUNNING_MODE == MODE_MAKE_IMG:
@@ -118,7 +117,6 @@ class BallViewer:
         }
 
         self.make_not_screenshot = True
-        self.color = init_ball_color()
         os.makedirs(DATASET_PATH, exist_ok=True)
         self.sub_folder_dir = DATASET_PATH
         self.preheat = 5    # openGL shit
@@ -235,11 +233,11 @@ class BallViewer:
             self.preheat -= 1
             return
         idx = self.curr_idx
-        x_i = idx %  X_LATTICE_LEN
-        idx = idx // X_LATTICE_LEN
-        y_i = idx %  Y_LATTICE_LEN
-        idx = idx // Y_LATTICE_LEN
-        z_i = idx %  Z_LATTICE_LEN
+        x_i = idx %  N_CURVE_VERTICES
+        idx = idx // N_CURVE_VERTICES
+        y_i = idx %  N_CURVE_VERTICES
+        idx = idx // N_CURVE_VERTICES
+        z_i = idx %  N_CURVE_VERTICES
         if self.make_not_screenshot:
             # make ball
             self.makeBall(
@@ -255,6 +253,10 @@ class BallViewer:
                 f'{x_i}_{y_i}_{z_i}', 
             )
             self.curr_idx += 1
+            if self.curr_idx % 16 == 0:
+                print(format(
+                    self.curr_idx / DATASET_SIZE, '.1%', 
+                ))
             if self.curr_idx == TRAJ_LEN:
                 print('DONE')
                 raise Exception('Program finished normally.')
