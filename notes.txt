@@ -71,7 +71,7 @@
         有了 recon 也不一定就 不 collapse. 
             估计是为什么 xuanjie 在图片上作 loss 而不是 z 上。
     continue pyxuanjie on hpc, disentangle
-        怎么和周五说的不一样
+        怎么和周五说的不一样? (周五说让我自己设计训练、重现)
     ask yann / alf / cho
         for RNN, GRU, 
             besides hidden_dim, any other way to control its capacity? 
@@ -182,9 +182,72 @@ next {
         We need a repr metric to tune hyperparameters. 
     Right now, I want to make gigantice networks and predict images well for once. 
 }
+7/24 {
+    dali_3
+        Bigger networks are sometimes harder to train. Junyan: "梯度性质不好。" So there's a sweet spot of size. 
+}
+7/28 {
+    结论： RNN 好难驯， 我训不出
+    正在问 xuanjie 要最新版， 准备直接 hpc 复现。
+}
+8 {
+    HPC 复现 xuanjie 代码成功。
+        可能的我做不成的原因
+            没加 teacher forcing
+            MSE != BCE
+}
+8/10 {
+    plot z traj for given seq. 
+        see encoder -> z
+        see rnn -> z
+    RTI = 001, see if rnn predicts clearly. 
+        maybe my aug is too much. I assumed KLD to work. 
+    接下来， 做 two body
+        新 idea: 一体 pretrain, 双体 finetune 的时候， 可以多加冗余维度。 可能既学到另一球位置， 又学到质心位置。 
+}
+8/15 {
+    Trying changing vae decoder last layer from tanh to sigmoid. 
+        reason: BCE requires prediction to be \in (0, 1)
+        Result: 还是老样子
+}
+8/17 {
+    BCE vs MSE
+        没啥区别。。。
+        然后意识到
+            BCE 可能好处是预测准的时候更像 L1
+                所以可能可以用 L1 替代
+            BCE 在预测正确的情况下也不是 0, 只要 ground truth 不是黑或白。
+    plot z traj for given seq. (see 8/10)
+        only plotted vae encoded, and not rnn (yet)
+        乱线。 as expected
+}
+8/24 {
+    Trying to use teacher forcing, T:R:I=0:0:1, big RNN size. 
+}
+9/7 {
+    Teacher forcing exps
+        result: no use
+}
+9/14 {
+    trying to de-emphasize the recon loss, to see if rnn pred is good. 
+        0.1:1 recon good pred bad
+}
+9/16 {
+    loss weight exp conclusion:
+        lowering self-recon loss weight increases pred loss. 
+    next, trying to lower pred loss weight instead. 
+}
+next {
+    8/17
+}
 todo {
-    try BCE instead of MSE
-        maybe replace tanh with sigmoid
+    Paper!
+        register openreview
+        3D 破布展开 visualization, using Xuanjie method
+            todo: tweak X_LATTICE
+    supervised coord RNN
+    remember:
+        fix TRI
     test TR vs T+R+I vs T+R
         ('TR', Config(
             Constant(1e-5), 1, 1, do_symmetry=True, 
@@ -214,7 +277,6 @@ todo {
             grad_clip=.03, 
         )), 
 }
-
 archive {
     有些结， 升一维就能解开。 暂时升一维， 等会儿降回来？
 }
