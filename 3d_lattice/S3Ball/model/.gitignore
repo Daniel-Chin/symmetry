@@ -1,5 +1,0 @@
-*.txt
-*.pt
-TrainingResults/
-vae3DBallEval_ImgBuffer/
-LINEAR_checkpoint_*/

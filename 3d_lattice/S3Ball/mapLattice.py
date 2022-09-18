@@ -1,4 +1,5 @@
 import os
+import shutil
 from typing import List
 import csv
 
@@ -64,6 +65,7 @@ def main():
     nns = loadNNs()
     print('load dataset...')
     dataset = loadDataset()
+    shutil.rmtree(ZLATTICE_PATH)
     os.makedirs(ZLATTICE_PATH, exist_ok=True)
     for i, nn in enumerate(nns):
         t = (i + 1) * CHECKPOINT_INTERVAL

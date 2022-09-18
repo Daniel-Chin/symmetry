@@ -1,0 +1,196 @@
+Instrument Lute:
+mean_diff: 0.23356515169143677
+std: 1.3880994319915771
+
+Instrument Steel Drum:
+mean_diff: 0.29636186361312866
+std: 2.785616874694824
+
+Instrument Sitar:
+mean_diff: 0.49033284187316895
+std: 1.86574125289917
+
+Instrument Clarinet:
+mean_diff: 0.03134758397936821
+std: 2.244210958480835
+
+Instrument Pan Flute:
+mean_diff: 0.13137668371200562
+std: 2.523547649383545
+
+Instrument Vibraphone:
+mean_diff: 0.1467723548412323
+std: 2.4542489051818848
+
+Instrument Shamisen:
+mean_diff: 0.26529085636138916
+std: 1.0145742893218994
+
+Instrument Banjo:
+mean_diff: 2.068159580230713
+std: 2.272812843322754
+
+Instrument Celesta:
+mean_diff: 0.08017230033874512
+std: 2.4020168781280518
+
+Instrument Handbells:
+mean_diff: 0.04024631902575493
+std: 2.469561815261841
+
+Instrument Recorder:
+mean_diff: 1.577681303024292
+std: 1.855093002319336
+
+Instrument Harpsichord:
+mean_diff: 0.025411469861865044
+std: 2.4884188175201416
+
+Instrument Electric Piano:
+mean_diff: 0.13122981786727905
+std: 2.4629065990448
+
+Instrument Harp:
+mean_diff: 1.1054182052612305
+std: 2.07255482673645
+
+Instrument Sampler:
+mean_diff: 0.32896915078163147
+std: 0.8038229942321777
+
+Instrument Clavichord:
+mean_diff: 0.14849190413951874
+std: 2.416948080062866
+
+Instrument Piano:
+mean_diff: 0.04024631902575493
+std: 2.469561815261841
+
+Instrument Viola:
+mean_diff: 0.8331496715545654
+std: 1.7864558696746826
+
+Instrument Shehnai:
+mean_diff: 0.05107106640934944
+std: 1.6091747283935547
+
+Instrument Violoncello:
+mean_diff: 0.08211681246757507
+std: 2.1547443866729736
+
+Instrument Trombone:
+mean_diff: 0.6926618218421936
+std: 1.7557709217071533
+
+Instrument Electric Guitar:
+mean_diff: 0.10362587869167328
+std: 2.4979021549224854
+
+Instrument Harmonica:
+mean_diff: 0.022609269246459007
+std: 2.51324462890625
+
+Instrument Mandolin:
+mean_diff: 0.2101263403892517
+std: 2.3819804191589355
+
+Instrument Organ:
+mean_diff: 1.4759514331817627
+std: 1.814597725868225
+
+Instrument Whistle:
+mean_diff: 0.2687680125236511
+std: 1.8688746690750122
+
+Instrument Soprano Saxophone:
+mean_diff: 0.045681171119213104
+std: 2.4467644691467285
+
+Instrument Koto:
+mean_diff: 1.4155842065811157
+std: 2.403993606567383
+
+Instrument Kalimba:
+mean_diff: 0.17670781910419464
+std: 2.450079917907715
+
+Instrument Guitar:
+mean_diff: 0.23356515169143677
+std: 1.3880994319915771
+
+Instrument Ocarina:
+mean_diff: 0.0591624490916729
+std: 2.439136266708374
+
+Instrument Shakuhachi:
+mean_diff: 0.15476670861244202
+std: 2.5261995792388916
+
+Instrument Church Bells:
+mean_diff: 2.631481170654297
+std: 1.9306796789169312
+
+Instrument Trumpet:
+mean_diff: 0.23415638506412506
+std: 2.4574389457702637
+
+Instrument Violin:
+mean_diff: 0.3369682729244232
+std: 1.6640700101852417
+
+Instrument Timpani:
+mean_diff: 2.350031852722168
+std: 2.082977533340454
+
+Instrument Marimba:
+mean_diff: 0.15195046365261078
+std: 2.4024832248687744
+
+Instrument Dulcimer:
+mean_diff: 0.06683080643415451
+std: 1.4314221143722534
+
+Instrument Piccolo:
+mean_diff: 0.6643841862678528
+std: 2.0091636180877686
+
+Instrument Horn:
+mean_diff: 1.2244431972503662
+std: 1.9892520904541016
+
+Instrument Accordion:
+mean_diff: 0.030797209590673447
+std: 2.4630370140075684
+
+Instrument Electric Organ:
+mean_diff: 0.06905916333198547
+std: 1.7084709405899048
+
+Instrument Xylophone:
+mean_diff: 1.6995304822921753
+std: 2.424072265625
+
+Instrument Oboe:
+mean_diff: 0.04903193935751915
+std: 2.4428417682647705
+
+Instrument Glockenspiel:
+mean_diff: 0.3847368359565735
+std: 2.1106107234954834
+
+Instrument Acoustic Bass:
+mean_diff: 0.43259701132774353
+std: 2.722100257873535
+
+Instrument Reed Organ:
+mean_diff: 0.03283572196960449
+std: 2.3947644233703613
+
+Instrument Flute:
+mean_diff: 0.17050713300704956
+std: 1.893791675567627
+
+============= Summary ==============
+mean_diff: 0.4894992709159851
+STD is: 2.3265626430511475
+mean_diff / std = 0.2103959172964096

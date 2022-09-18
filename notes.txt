@@ -237,6 +237,17 @@ next {
         lowering self-recon loss weight increases pred loss. 
     next, trying to lower pred loss weight instead. 
 }
+9/17 {
+    lowering pred loss by 0.3 and 0.1 does not affect pred loss. There's even a minor increase. 
+        try again, with more rand_inits. 
+}
+9/18 {
+    loss weight:
+        pred loss ~= 0.5 seems to provide low losses, but none of the exps successfully predicts the video. 
+    next step:
+        compare loss=1 with loss=0.5 to gain statistical significance. 
+        Meanwhile, develop supervised RNN training. 
+}
 next {
     8/17
 }

@@ -11,11 +11,16 @@ from shared import *
 
 CELL_RESOLUTION = 256
 HEADING_ROW_HEIGHT = 0.3
+Z_SCENE_RADIUS = 3
 
 FONT = ImageFont.truetype("verdana.ttf", 24)
+DEFAULT_PERSPECTIVE = torch.Tensor([
+    [1, 0, .5], 
+    [0, 1, .5], 
+])
 
 RAND_INIT_TIMES = 1
-EXPERIMENTS = ['xjMethod', 'xjMethod']
+EXPERIMENTS = ['cam 0', 'cam 1']
 
 def main():
     frame_width_height = (
@@ -80,9 +85,21 @@ def visualizeOneEpoch(epoch, vidOut, frame_width_height):
                     pass
                 else:
                     raise Exception('CSV longer than expected.')
+            # temp rotation
+            if exp_i == 0:
+                perspective = torch.Tensor([
+                    [1, 0, .5], 
+                    [0, 1, .5], 
+                ])
+            else:
+                perspective = torch.Tensor([
+                    [.5, 1, 0], 
+                    [.5, 0, 1], 
+                ])
             drawCell(
                 imDraw, zLattice, exp_i, 
                 rand_init_i + HEADING_ROW_HEIGHT, 
+                perspective, 
             )
     vidOut.write(cv2.cvtColor(
         np.asarray(frame), cv2.COLOR_BGR2RGB, 
@@ -94,7 +111,10 @@ def textCell(imDraw, text, col_i, row_i):
         row_i * CELL_RESOLUTION, 
     ), text, font=FONT, anchor='mm')
 
-def drawCell(imDraw, zLattice, col_i, row_i):
+def drawCell(
+    imDraw, zLattice: torch.Tensor, col_i, row_i, 
+    perspective=DEFAULT_PERSPECTIVE, 
+):
     x_offset = CELL_RESOLUTION * col_i
     y_offset = CELL_RESOLUTION * row_i
     step = N_CURVE_SEGMENTS // (N_CURVES - 1)
@@ -109,17 +129,15 @@ def drawCell(imDraw, zLattice, col_i, row_i):
             for z_seg, color in zip(z_segs, ('red', 'green', 'blue')):
                 coords = []
                 for i in range(N_CURVE_VERTICES):
-                    x = z_seg[i, 0].item()
-                    y = z_seg[i, 1].item()
-                    z = z_seg[i, 2].item()
-                    x += z * .5
-                    y += z * .5
+                    x, y = perspective @ z_seg[i, :]
+                    x = x.item()
+                    y = y.item()
                     coords.append((
                         rasterize(
-                            x, 3, CELL_RESOLUTION, 
+                            x, Z_SCENE_RADIUS, CELL_RESOLUTION, 
                         ) + x_offset, 
                         rasterize(
-                            y, 3, CELL_RESOLUTION, 
+                            y, Z_SCENE_RADIUS, CELL_RESOLUTION, 
                         ) + y_offset, 
                     ))
                 imDraw.line(coords, color)
