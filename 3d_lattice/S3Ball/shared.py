@@ -1,6 +1,11 @@
 import numpy as np
 
 DATASET_PATH = './latticeDataset'
+print('DATASET_PATH =', DATASET_PATH)
+print('Change?')
+op = input('>')
+if op != '':
+    DATASET_PATH = op
 CHECKPOINTS_PATH = './model/checkpoint_%d.pt'
 ZLATTICE_PATH = './zLattice'
 
