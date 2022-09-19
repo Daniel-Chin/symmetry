@@ -65,7 +65,7 @@ def main():
     nns = loadNNs()
     print('load dataset...', flush=True)
     dataset = loadDataset()
-    shutil.rmtree(ZLATTICE_PATH)
+    shutil.rmtree(ZLATTICE_PATH, ignore_errors=True)
     os.makedirs(ZLATTICE_PATH, exist_ok=True)
     for i, nn in enumerate(nns):
         t = (i + 1) * CHECKPOINT_INTERVAL
