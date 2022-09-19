@@ -14,8 +14,7 @@ from train_config import CONFIG
 
 device = torch.device("cpu")
 
-def loadNNs() -> List[Conv2dGruConv2d]:
-    models = []
+def loadNNs():
     i = 0
     while True:
         i += CHECKPOINT_INTERVAL
@@ -27,9 +26,9 @@ def loadNNs() -> List[Conv2dGruConv2d]:
                 checkpoint_path, 
                 map_location=device, 
             ))
-            models.append(model)
+            yield model
         else:
-            return models
+            return
 
 def loadDataset():
     prev_cwd = os.getcwd()
