@@ -61,7 +61,7 @@ def img2Tensor(img):
     )
 
 def main():
-    print('load NN...', flush=True)
+    print('init generator...', flush=True)
     nns = loadNNs()
     print('load dataset...', flush=True)
     dataset = loadDataset()
