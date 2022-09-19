@@ -1,10 +1,6 @@
-import os
-import sys
-sys.path.append(os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), 
-    '../..', 
-))
+from shared import *
 
+import os
 import shutil
 from typing import List
 import csv
@@ -13,9 +9,8 @@ import torch
 from torch import Tensor
 from PIL import Image, ImageDraw, ImageFont
 
-from model.normal_rnn import Conv2dGruConv2d, LAST_CN_NUM, LAST_H, LAST_W, IMG_CHANNEL
-from model.train_config import CONFIG
-from shared import *
+from normal_rnn import Conv2dGruConv2d, LAST_CN_NUM, LAST_H, LAST_W, IMG_CHANNEL
+from train_config import CONFIG
 
 device = torch.device("cpu")
 

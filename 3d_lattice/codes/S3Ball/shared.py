@@ -1,12 +1,19 @@
 import numpy as np
+from os import path
 import sys
 
 DATASET_PATH = './latticeDataset'
 try:
-    _, CHECKPOINTS_PATH, ZLATTICE_PATH = sys.argv
+    _, model_path, exp_id = sys.argv
+    CHECKPOINTS_PATH = path.join(
+        model_path, exp_id, 'checkpoint_%d.pt', 
+    )
+    ZLATTICE_PATH = f'./zLattice_{exp_id}'
 except ValueError:
+    model_path = './model'
     CHECKPOINTS_PATH = './model/checkpoint_%d.pt'
     ZLATTICE_PATH = './zLattice'
+sys.path.append(path.abspath(model_path))
 
 N_CURVES = 3 + 1
 N_CURVE_SEGMENTS = 12
