@@ -4,7 +4,7 @@
 #SBATCH --mail-type=ALL
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --time=1:00:00
+#SBATCH --time=0:50:00
 #SBATCH --mem=4GB
 #SBATCH --job-name=lattice
 #SBATCH --output=slurm_map.out
