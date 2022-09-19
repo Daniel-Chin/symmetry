@@ -62,15 +62,15 @@ def img2Tensor(img):
     )
 
 def main():
-    print('load NN...')
+    print('load NN...', flush=True)
     nns = loadNNs()
-    print('load dataset...')
+    print('load dataset...', flush=True)
     dataset = loadDataset()
     shutil.rmtree(ZLATTICE_PATH)
     os.makedirs(ZLATTICE_PATH, exist_ok=True)
     for i, nn in enumerate(nns):
         t = (i + 1) * CHECKPOINT_INTERVAL
-        print('epoch', t)
+        print('epoch', t, flush=True)
         with torch.no_grad():
             out: Tensor = nn.encoder(dataset.view(
                 DATASET_SIZE, 3, IMG_W, IMG_H, 

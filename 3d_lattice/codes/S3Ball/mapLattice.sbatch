@@ -5,7 +5,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --time=0:50:00
-#SBATCH --mem=4GB
+#SBATCH --mem=6GB
 #SBATCH --job-name=lattice
 #SBATCH --output=slurm_map.out
 #SBATCH --error=slurm_map.err
