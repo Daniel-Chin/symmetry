@@ -1,7 +1,8 @@
 latticeDataset/
 Ball3DImg/
-zLattice/
+zLattice*/
 model*/
 *.ttf
 *.mp4
 *.zip
+*.gz

@@ -29,21 +29,27 @@ def main():
             HEADING_ROW_HEIGHT + RAND_INIT_TIMES
         )), 
     )
-    vidOut = cv2.VideoWriter(
-        'zLattice.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 
-        5, frame_width_height, 
-    )
-    try:
-        for epoch in count(CHECKPOINT_INTERVAL, CHECKPOINT_INTERVAL):
-            visualizeOneEpoch(
-                epoch, vidOut, frame_width_height, 
-            )
-    except StopIteration:
-        print('total epoch', epoch)
-    vidOut.release()
-    print('written to MP4.')
+    for zlattice_path in ZLATTICE_PATHS:
 
-def visualizeOneEpoch(epoch, vidOut, frame_width_height):
+        vidOut = cv2.VideoWriter(
+            zlattice_path.rstrip('/\\') + '.mp4', 
+            cv2.VideoWriter_fourcc(*'mp4v'), 
+            5, frame_width_height, 
+        )
+        try:
+            for epoch in count(CHECKPOINT_INTERVAL, CHECKPOINT_INTERVAL):
+                visualizeOneEpoch(
+                    epoch, vidOut, frame_width_height, 
+                    zlattice_path, 
+                )
+        except StopIteration:
+            print('total epoch', epoch)
+        vidOut.release()
+        print('written to MP4.')
+
+def visualizeOneEpoch(
+    epoch, vidOut, frame_width_height, zlattice_path, 
+):
     frame = Image.new('RGB', frame_width_height)
     imDraw = ImageDraw.Draw(frame)
     textCell(
@@ -55,7 +61,7 @@ def visualizeOneEpoch(epoch, vidOut, frame_width_height):
             exp_i + .5, HEADING_ROW_HEIGHT * .5, 
         )
         for rand_init_i in range(RAND_INIT_TIMES):
-            filename = path.join(ZLATTICE_PATH, f'{epoch}.csv')
+            filename = path.join(zlattice_path, f'{epoch}.csv')
             if not path.isfile(filename):
                 print('epoch', epoch, 'not found.')
                 raise StopIteration
@@ -65,7 +71,7 @@ def visualizeOneEpoch(epoch, vidOut, frame_width_height):
                 N_CURVE_VERTICES, 
                 N_LATENT_DIM, 
             ))
-            print(filename)
+            print('\r', filename, end=' ', flush=True)
             with open(filename, 'r') as f:
                 c = csv.reader(f)
                 next(c)
