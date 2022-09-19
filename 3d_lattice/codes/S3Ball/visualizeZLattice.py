@@ -9,6 +9,8 @@ import torch
 
 from shared import *
 
+# FRAME_RATE = 5
+FRAME_RATE = 30
 CELL_RESOLUTION = 256
 HEADING_ROW_HEIGHT = 0.3
 Z_SCENE_RADIUS = 3
@@ -19,49 +21,52 @@ DEFAULT_PERSPECTIVE = torch.Tensor([
     [0, 1, .5], 
 ])
 
-RAND_INIT_TIMES = 1
-EXPERIMENTS = ['cam 0', 'cam 1']
-
 def main():
     frame_width_height = (
-        CELL_RESOLUTION * (len(EXPERIMENTS)), 
+        CELL_RESOLUTION * (len(expGroups)), 
         round(CELL_RESOLUTION * (
-            HEADING_ROW_HEIGHT + RAND_INIT_TIMES
+            HEADING_ROW_HEIGHT + len(RAND_INIT_IDS)
         )), 
     )
-    for zlattice_path in ZLATTICE_PATHS:
-
-        vidOut = cv2.VideoWriter(
-            zlattice_path.rstrip('/\\') + '.mp4', 
-            cv2.VideoWriter_fourcc(*'mp4v'), 
-            5, frame_width_height, 
-        )
-        try:
-            for epoch in count(CHECKPOINT_INTERVAL, CHECKPOINT_INTERVAL):
-                visualizeOneEpoch(
-                    epoch, vidOut, frame_width_height, 
-                    zlattice_path, 
-                )
-        except StopIteration:
-            print('total epoch', epoch)
+    vidOut = cv2.VideoWriter(
+        'zLattice.mp4', 
+        cv2.VideoWriter_fourcc(*'mp4v'), 
+        FRAME_RATE, frame_width_height, 
+    )
+    try:
+        for epoch in count(CHECKPOINT_INTERVAL, CHECKPOINT_INTERVAL):
+            visualizeOneEpoch(
+                epoch, vidOut, frame_width_height, 
+            )
+    except StopIteration:
+        print()
+        print('total epoch', epoch - CHECKPOINT_INTERVAL)
+    except KeyboardInterrupt:
+        print()
+        print('Interrupted. ')
+    finally:
         vidOut.release()
-        print('written to MP4.')
+        print()
+    print('written to MP4.')
 
 def visualizeOneEpoch(
-    epoch, vidOut, frame_width_height, zlattice_path, 
+    epoch, vidOut, frame_width_height, 
 ):
     frame = Image.new('RGB', frame_width_height)
     imDraw = ImageDraw.Draw(frame)
     textCell(
         imDraw, f'{epoch=}', 1, HEADING_ROW_HEIGHT * .2, 
     )
-    for exp_i, exp_name in enumerate(EXPERIMENTS):
+    for exp_i, expGroup in enumerate(expGroups):
         textCell(
-            imDraw, exp_name, 
+            imDraw, expGroup.name, 
             exp_i + .5, HEADING_ROW_HEIGHT * .5, 
         )
-        for rand_init_i in range(RAND_INIT_TIMES):
-            filename = path.join(zlattice_path, f'{epoch}.csv')
+        for rand_init_i, rand_init_id in enumerate(RAND_INIT_IDS):
+            filename = path.join(
+                expGroup.getZLatticePath(rand_init_id), 
+                f'{epoch}.csv', 
+            )
             if not path.isfile(filename):
                 print('epoch', epoch, 'not found.')
                 raise StopIteration
@@ -71,7 +76,10 @@ def visualizeOneEpoch(
                 N_CURVE_VERTICES, 
                 N_LATENT_DIM, 
             ))
-            print('\r', filename, end=' ', flush=True)
+            print('\r', filename
+                .replace('\\', '\t\\')
+                .replace('_', '\t_')
+            , end=' ', flush=True)
             with open(filename, 'r') as f:
                 c = csv.reader(f)
                 next(c)
@@ -92,16 +100,20 @@ def visualizeOneEpoch(
                 else:
                     raise Exception('CSV longer than expected.')
             # temp rotation
-            if exp_i == 0:
-                perspective = torch.Tensor([
-                    [1, 0, .5], 
-                    [0, 1, .5], 
-                ])
-            else:
-                perspective = torch.Tensor([
-                    [.5, 1, 0], 
-                    [.5, 0, 1], 
-                ])
+            perspective = torch.Tensor([
+                [
+                    [1, 0, 0], 
+                    [0, 1, 0], 
+                ], 
+                [
+                    [0, 1, 0], 
+                    [0, 0, 1], 
+                ], 
+                [
+                    [0, 0, 1], 
+                    [1, 0, 0], 
+                ], 
+            ])[exp_i, :, :]
             drawCell(
                 imDraw, zLattice, exp_i, 
                 rand_init_i + HEADING_ROW_HEIGHT, 

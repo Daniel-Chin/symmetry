@@ -1,27 +1,39 @@
 import numpy as np
 from os import path
-import sys
 
-# models = ['./model']
-# CHECKPOINTS_PATHS = ['./model/checkpoint_%d.pt']
-# ZLATTICE_PATHS = ['./zLattice']
+class ExpGroup:
+    def __init__(self, name, model_path):
+        self.name = name
+        self.model_path = model_path
+    
+    def getCheckpoint(self, rand_init_id, epoch):
+        return path.join(
+            self.model_path, 
+            rand_init_id, 
+            f'checkpoint_{epoch}.pt', 
+        )
+    
+    def getZLatticePath(self, rand_init_id):
+        x = './zLattice'
+        if rand_init_id == '':
+            return x
+        else:
+            return x + '_' + str(rand_init_id)
 
-model_paths = [
-    '/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae', 
+# expGroups = [ExpGroup('xjMethod', './model')]
+# RAND_INIT_IDS = ['']
+
+expGroups = [
+    # ExpGroup('vae aug 0', '/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae'), 
+    ExpGroup('cam 0', '/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae'), 
+    ExpGroup('cam 1', '/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae'), 
+    ExpGroup('cam 2', '/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae'), 
 ]
-exp_ids = [
+RAND_INIT_IDS = [
     16, 
-    # 42, 
-    # 100, 
+    42, 
+    100, 
 ]
-CHECKPOINTS_PATHS = []
-ZLATTICE_PATHS = []
-for model_path in model_paths:
-    for exp_id in exp_ids:
-        CHECKPOINTS_PATHS.append(path.join(
-            model_path, str(exp_id), 'checkpoint_%d.pt', 
-        ))
-        ZLATTICE_PATHS.append(f'./zLattice_{exp_id}')
 
 DATASET_PATH = './latticeDataset'
 
