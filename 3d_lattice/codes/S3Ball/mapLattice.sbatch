@@ -7,11 +7,13 @@
 #SBATCH --time=1:00:00
 #SBATCH --mem=4GB
 #SBATCH --job-name=lattice
-#SBATCH --output=slurm_train.out
-#SBATCH --error=slurm_train.err
+#SBATCH --output=slurm_map.out
+#SBATCH --error=slurm_map.err
 #SBATCH --partition=aquila
 
 module purge
 module load miniconda
 source activate danielTorch
-python mapLattice.py
+python mapLattice.py /scratch/nq285/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae/16/checkpoint_%d.pt  ./zLattice_16
+python mapLattice.py /scratch/nq285/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae/42/checkpoint_%d.pt  ./zLattice_42
+python mapLattice.py /scratch/nq285/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae/100/checkpoint_%d.pt ./zLattice_100

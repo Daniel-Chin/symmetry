@@ -1,13 +1,12 @@
 import numpy as np
+import sys
 
 DATASET_PATH = './latticeDataset'
-CHECKPOINTS_PATH = './model/checkpoint_%d.pt'
-print('default CHECKPOINTS_PATH =', CHECKPOINTS_PATH)
-print('Change? (Enter to use default)')
-op = input('>')
-if op != '':
-    CHECKPOINTS_PATH = op
-ZLATTICE_PATH = './zLattice'
+try:
+    _, CHECKPOINTS_PATH, ZLATTICE_PATH = sys.argv
+except ValueError:
+    CHECKPOINTS_PATH = './model/checkpoint_%d.pt'
+    ZLATTICE_PATH = './zLattice'
 
 N_CURVES = 3 + 1
 N_CURVE_SEGMENTS = 12
