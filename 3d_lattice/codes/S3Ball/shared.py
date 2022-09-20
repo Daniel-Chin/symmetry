@@ -9,7 +9,7 @@ class ExpGroup:
     def getCheckpoint(self, rand_init_id, epoch):
         return path.join(
             self.model_path, 
-            rand_init_id, 
+            str(rand_init_id), 
             f'checkpoint_{epoch}.pt', 
         )
     
