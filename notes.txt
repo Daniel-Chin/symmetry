@@ -248,6 +248,13 @@ next {
         compare loss=1 with loss=0.5 to gain statistical significance. 
         Meanwhile, develop supervised RNN training. 
 }
+9/19 {
+    z visualization should use 512 dataset
+}
+9/20 {
+    loss weight:
+        not siginificant. We will use 1:1. 
+}
 next {
     8/17
 }

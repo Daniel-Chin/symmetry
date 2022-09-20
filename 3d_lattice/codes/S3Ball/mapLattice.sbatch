@@ -14,6 +14,6 @@
 module purge
 module load miniconda
 source activate danielTorch
-# python mapLattice.py /scratch/nq285/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae 16
+python mapLattice.py /scratch/nq285/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae 16
 python mapLattice.py /scratch/nq285/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae 42
 python mapLattice.py /scratch/nq285/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae 100
