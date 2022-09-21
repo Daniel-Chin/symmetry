@@ -31,11 +31,11 @@ expGroups = [
     ), 
     ExpGroup(
         'vae_aug_4', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_4-vae'), 
-        'VAE+RNN, Representation Augmented by 4x', 
+        'VAE+RNN, Representation Augmented by $4 \\times$', 
     ), 
     ExpGroup(
         'ae_aug_4', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_4-ae'), 
-        'AE+RNN, Representation Augmented by 4x', 
+        'AE+RNN, Representation Augmented by $4 \\times$', 
     ), 
 ]
 RAND_INIT_IDS = [

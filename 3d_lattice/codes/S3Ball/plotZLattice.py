@@ -12,15 +12,19 @@ plt.rcParams.update({
     "text.usetex": True,
     "font.family": "Helvetica",
 })
+DPI = plt.rcParams['figure.dpi']
 
 MAX_T = 80000
-N_COLS = 3
+N_COLS = 15
 EPOCH_INTERVAL = 100
 
 Z_SCENE_RADIUS = 3.2
 
-HSPACE = .3
-TITLE_HSPACE = 1
+MYSTERIOUS_RATIO = .035
+FIGSIZE = (7, 5)
+FONTSIZE = 12
+HSPACE = .2
+TITLE_HSPACE = 1.8
 TITLE_HSPACE_PER_ROW = TITLE_HSPACE / len(RAND_INIT_IDS)
 COLORS = (
     (.9, 0, 0), 
@@ -42,7 +46,8 @@ def SubplotIter():
                 )
 
 def main():
-    fig, axes = plt.subplots(
+    fig = plt.figure(figsize=FIGSIZE)
+    axes = fig.subplots(
         len(expGroups) * len(RAND_INIT_IDS), N_COLS, 
         sharex=True, sharey=True, 
     )
@@ -59,11 +64,7 @@ def main():
         )
         if rand_init_i == 0 and col_i == N_COLS // 2:
             ax.set_title(expGroup.display)
-        if row_i == N_ROWS - 1:
-            # ax.set_xlabel((
-            #     'Epoch = ' if col_i == 0 else ''
-            # ) + str(epoch))
-            ax.set_xlabel(f'Epoch {round(batch_i / 16)}')
+
     bBoxes = []
     for (
         batch_i, row_i, col_i, expGroup, 
@@ -71,12 +72,58 @@ def main():
     ) in SubplotIter():
         ax = axes[row_i][col_i]
         y_offset = rand_init_i * TITLE_HSPACE_PER_ROW
-        y_offset *= .06 # Mysterious ratio of global/local
+        y_offset *= MYSTERIOUS_RATIO
         bBox = ax.get_position()
         bBoxes.append(Bbox([
             [bBox.x0, bBox.y0 + y_offset], 
             [bBox.x1, bBox.y1 + y_offset], 
         ]))
+        if row_i == N_ROWS - 1:
+            epoch = str(round(batch_i / 16))
+            # ax.set_xlabel((
+            #     'Epoch = ' if col_i == 0 else ''
+            # ) + epoch)
+            # ax.set_xlabel(f'Epoch {epoch}')
+
+            EPOCH_SINK = -2 * DPI
+            ax.annotate(
+                epoch, xy=(
+                    (
+                        bBox.width * DPI / MYSTERIOUS_RATIO
+                    ) / 2 - textWidth(epoch) / 2, 
+                    EPOCH_SINK, 
+                ), 
+                xycoords='axes pixels', fontsize=FONTSIZE, 
+            )
+            if col_i == 0:
+                EPOCH_HEADING = 'Epoch '
+                ARROW_SINK = -1.3 * DPI
+                ARROW_X = 0 * DPI
+                ax.annotate(
+                    EPOCH_HEADING, xy=(
+                        ARROW_X - textWidth(EPOCH_HEADING), 
+                        ARROW_SINK - textHeight() / 2, 
+                    ), 
+                    xycoords='axes pixels', fontsize=FONTSIZE, 
+                )
+                ax.annotate(
+                    '', 
+                    xytext=(
+                        ARROW_X, ARROW_SINK, 
+                    ), 
+                    xy=(
+                        (
+                            DPI * 26 
+                            - bBox.x0 * DPI / MYSTERIOUS_RATIO
+                        ), 
+                        ARROW_SINK, 
+                    ), 
+                    xycoords='axes pixels', arrowprops=dict(
+                        arrowstyle='-|>', 
+                        shrinkA=0, 
+                        shrinkB=0, 
+                    ), 
+                )
     for (
         batch_i, row_i, col_i, expGroup, 
         rand_init_i, rand_init_id, 
@@ -148,7 +195,13 @@ def plotOne(
                 ax.plot(
                     z_seg[:, 0], 
                     z_seg[:, 2], 
-                    c=color, linewidth=1, 
+                    c=color, linewidth=.5, 
                 )
+
+def textHeight():
+    return FONTSIZE * 2.8
+
+def textWidth(x):
+    return len(x) * textHeight()
 
 main()
