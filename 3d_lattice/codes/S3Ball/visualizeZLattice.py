@@ -17,8 +17,8 @@ Z_SCENE_RADIUS = 3
 
 FONT = ImageFont.truetype("verdana.ttf", 24)
 DEFAULT_PERSPECTIVE = torch.Tensor([
-    [1, 0, .5], 
-    [0, 1, .5], 
+    [1, 0, 0], 
+    [0, 0, 1], 
 ])
 
 def main():
