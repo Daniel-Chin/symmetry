@@ -14,7 +14,7 @@ class ExpGroup:
         )
     
     def getZLatticePath(self, rand_init_id):
-        x = './zLattice'
+        x = f'./zLattice_{self.name}'
         if rand_init_id == '':
             return x
         else:
@@ -24,7 +24,7 @@ class ExpGroup:
 # RAND_INIT_IDS = ['']
 
 expGroups = [
-    ExpGroup('vae aug 0', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae')), 
+    ExpGroup('vae_aug_0', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae')), 
     # ExpGroup('cam 0', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae')), 
     # ExpGroup('cam 1', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae')), 
     # ExpGroup('cam 2', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae')), 

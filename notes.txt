@@ -260,9 +260,8 @@ next {
 }
 todo {
     Paper!
-        register openreview
         3D 破布展开 visualization, using Xuanjie method
-            todo: tweak X_RANGE
+        linearity, use R^2. 
     supervised coord RNN
     remember:
         fix TRI
