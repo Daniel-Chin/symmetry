@@ -25,7 +25,8 @@ class ExpGroup:
 
 expGroups = [
     # ExpGroup('vae_aug_0', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae')), 
-    ExpGroup('vae_aug_4', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_4-vae')), 
+    # ExpGroup('vae_aug_4', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_4-vae')), 
+    ExpGroup('ae_aug_4', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_4-ae')), 
 ]
 RAND_INIT_IDS = [
     16, 
