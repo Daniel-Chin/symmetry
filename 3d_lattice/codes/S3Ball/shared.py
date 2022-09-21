@@ -2,9 +2,10 @@ import numpy as np
 from os import path
 
 class ExpGroup:
-    def __init__(self, name, model_path):
+    def __init__(self, name, model_path, display="default"):
         self.name = name
         self.model_path = model_path
+        self.display = display
     
     def getCheckpoint(self, rand_init_id, epoch):
         return path.join(
@@ -24,9 +25,18 @@ class ExpGroup:
 # RAND_INIT_IDS = ['']
 
 expGroups = [
-    # ExpGroup('vae_aug_0', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae')), 
-    ExpGroup('vae_aug_4', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_4-vae')), 
-    # ExpGroup('ae_aug_4', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_4-ae')), 
+    ExpGroup(
+        'vae_aug_0', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae'), 
+        'VAE+RNN, without Symmetry', 
+    ), 
+    ExpGroup(
+        'vae_aug_4', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_4-vae'), 
+        'VAE+RNN, Representation Augmented by 4x', 
+    ), 
+    ExpGroup(
+        'ae_aug_4', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_4-ae'), 
+        'AE+RNN, Representation Augmented by 4x', 
+    ), 
 ]
 RAND_INIT_IDS = [
     16, 
