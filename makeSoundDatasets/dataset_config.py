@@ -1,0 +1,11 @@
+SR = 16000
+HOP_LEN = 512
+N_HOPS_PER_NOTE = 5
+SOUND_FONT_PATH = './FluidR3_GM/FluidR3_GM.sf2'
+
+N_SAMPLES_PER_NOTE = HOP_LEN * N_HOPS_PER_NOTE
+SEC_PER_NOTE = N_SAMPLES_PER_NOTE / SR
+
+if __name__ == '__main__':
+    print(f'{N_SAMPLES_PER_NOTE=}')
+    print(f'{SEC_PER_NOTE=}')

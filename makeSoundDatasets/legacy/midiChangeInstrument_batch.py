@@ -74,14 +74,14 @@ ALL_INSTRUMENT_LIST = [
     instrument.Saxophone(), # 85
     instrument.SopranoSaxophone(),
     instrument.AltoSaxophone(),
-    # instrument.BaritoneSaxophone(), # 73
+    instrument.BaritoneSaxophone(), # 73
     instrument.Bagpipes(),
     instrument.Shehnai(),
     instrument.Horn(),
     instrument.Trumpet(),
     instrument.Trombone(),
     instrument.BassTrombone(),
-    # instrument.Tuba(), #73
+    instrument.Tuba(), #73
     instrument.Vibraphone(),
     instrument.Marimba(),
     instrument.Xylophone(),
