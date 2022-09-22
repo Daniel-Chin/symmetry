@@ -38,8 +38,8 @@ def main():
                 instrument_name
             ].__class__.__name__
             print(
-                '    instrument.', class_name, '(), range(', 
-                p_start, ', ', p_stop, '), ', 
+                '    (instrument.', class_name, '(), range(', 
+                p_start, ', ', p_stop, ')), ', 
                 sep='', file=f, 
             )
         print(']', file=f)

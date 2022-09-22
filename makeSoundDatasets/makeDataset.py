@@ -1,3 +1,7 @@
+import os
+from os import path
+import shutil
+
 import pretty_midi as pm
 from music21.instrument import Instrument, Piano
 try:
@@ -9,6 +13,7 @@ except ImportError:
 import librosa
 import soundfile
 import numpy as np
+from tqdm import tqdm
 
 from dataset_config import *
 from intruments_and_ranges import intruments_ranges
@@ -16,13 +21,16 @@ from intruments_and_ranges import intruments_ranges
 MAJOR_SCALE = [0, 2, 4, 5, 7, 9, 11, 12, 11, 9, 7, 5, 4, 2, 0]
 # PITCH_SEQ_RAISING_12 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
-SONG_LEN = N_SAMPLES_PER_NOTE * len(MAJOR_SCALE)
+SONG_LEN = (
+    N_SAMPLES_PER_NOTE + N_SAMPLES_BETWEEN_NOTES
+) * len(MAJOR_SCALE)
 
 BEND_RATIO = .5  # When MIDI specification is incomplete...
 BEND_MAX = 8191
 GRACE_END = .1
 TEMP_MIDI_FILE = './temp/temp.mid'
 TEMP_WAV_FILE  = './temp/temp.wav'
+DATASET_PATH = './datasets/cleanTrain'
 
 fs = FluidSynth(SOUND_FONT_PATH, sample_rate=SR)
 
@@ -33,10 +41,10 @@ def synthOneNote(
     # make midi
     music = pm.PrettyMIDI()
     ins = pm.Instrument(program=instrument.midiProgram)
-    rounded_pitch = round(pitch)
+    rounded_pitch = int(round(pitch))
     note = pm.Note(
         velocity=100, pitch=rounded_pitch, 
-        start=0, end=SEC_PER_NOTE + GRACE_END, 
+        start=0, end=NOTE_DURATION + GRACE_END, 
     )
     pitchBend = pm.PitchBend(
         round((pitch - rounded_pitch) * BEND_MAX * BEND_RATIO), 
@@ -91,15 +99,31 @@ def testPitchBend():
         }.wav''', True)
 
 def main():
-    for instrument, pitch_range in intruments_ranges:
+    try:
+        shutil.rmtree(DATASET_PATH)
+    except FileNotFoundError:
+        pass
+    os.makedirs(DATASET_PATH, exist_ok=True)
+    for instrument, pitch_range in tqdm(intruments_ranges):
         pitches_audio = {}
         for pitch in pitch_range:
-            pitches_audio[pitch] = synthOneNote(fs, pitch, instrument)
-            dtype = pitches_audio[pitch].dtype
-        song = genOneSong(pitch_range, pitches_audio, dtype)
-        soundfile.write(f'./datasets/.wav', song, SR)
+            audio = synthOneNote(
+                fs, pitch, instrument, 
+            )[:N_SAMPLES_PER_NOTE]
+            pitches_audio[pitch] = audio
+            dtype = audio.dtype
+            audio[-FADE_OUT_N_SAMPLES:] = audio[
+                -FADE_OUT_N_SAMPLES:
+            ] * FADE_OUT_FILTER
+        for start_pitch, song in GenSongs(
+            pitch_range, pitches_audio, dtype, 
+        ):
+            soundfile.write(path.join(
+                DATASET_PATH, 
+                f'{instrument.instrumentName}-{start_pitch}.wav', 
+            ), song, SR)
 
-def genOneSong(pitch_range: range, pitches_audio, dtype):
+def GenSongs(pitch_range: range, pitches_audio, dtype):
     start_pitch = pitch_range.start
     while True:
         song = np.zeros((SONG_LEN, ), dtype=dtype)
@@ -109,12 +133,14 @@ def genOneSong(pitch_range: range, pitches_audio, dtype):
             try:
                 audio = pitches_audio[pitch]
             except KeyError:
-                return song
+                return
             song[
                 cursor : cursor + N_SAMPLES_PER_NOTE
             ] = audio
             cursor += N_SAMPLES_PER_NOTE
+            cursor += N_SAMPLES_BETWEEN_NOTES
         assert cursor == SONG_LEN
+        yield start_pitch, song
         start_pitch += 1
 
 # vibrato()
