@@ -1,6 +1,7 @@
 import os
 from os import path
 import shutil
+import pickle
 
 import pretty_midi as pm
 from music21.instrument import Instrument, Piano
@@ -104,6 +105,7 @@ def main():
     except FileNotFoundError:
         pass
     os.makedirs(DATASET_PATH, exist_ok=True)
+    index = []
     for instrument, pitch_range in tqdm(intruments_ranges):
         pitches_audio = {}
         for pitch in pitch_range:
@@ -118,10 +120,13 @@ def main():
         for start_pitch, song in GenSongs(
             pitch_range, pitches_audio, dtype, 
         ):
+            index.append((instrument.instrumentName, start_pitch))
             soundfile.write(path.join(
                 DATASET_PATH, 
                 f'{instrument.instrumentName}-{start_pitch}.wav', 
             ), song, SR)
+    with open(path.join(DATASET_PATH, 'index.pickle'), 'wb') as f:
+        pickle.dump(index, f)
 
 def GenSongs(pitch_range: range, pitches_audio, dtype):
     start_pitch = pitch_range.start
