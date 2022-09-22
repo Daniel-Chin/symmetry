@@ -1,9 +1,9 @@
-from typing import List
+from typing import List, Tuple
 
 from music21 import instrument
 from music21.instrument import Instrument
 
-intruments_ranges: List[Instrument] = [
+intruments_ranges: List[Tuple[Instrument, range]] = [
     instrument.Accordion(), range(58, 97), 
     instrument.AcousticBass(), range(48, 97), 
     instrument.Banjo(), range(36, 97), 

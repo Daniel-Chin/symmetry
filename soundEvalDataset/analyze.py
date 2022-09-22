@@ -20,12 +20,12 @@ def main():
     # assert test_set == set(reverse_solve.keys())
 
     with open('intruments_and_ranges.py', 'w') as f:
-        print('from typing import List', file=f)
+        print('from typing import List, Tuple', file=f)
         print('', file=f)
         print('from music21 import instrument', file=f)
         print('from music21.instrument import Instrument', file=f)
         print('', file=f)
-        print('intruments_ranges: List[Instrument] = [', file=f)
+        print('intruments_ranges: List[Tuple[Instrument, range]] = [', file=f)
         for instrument_name, pitches in pitch_map.items():
             if instrument_name not in test_set:
                 continue
