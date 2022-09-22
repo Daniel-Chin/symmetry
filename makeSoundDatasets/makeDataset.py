@@ -19,9 +19,6 @@ from tqdm import tqdm
 from dataset_config import *
 from intruments_and_ranges import intruments_ranges
 
-MAJOR_SCALE = [0, 2, 4, 5, 7, 9, 11, 12, 11, 9, 7, 5, 4, 2, 0]
-# PITCH_SEQ_RAISING_12 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-
 SONG_LEN = (
     N_SAMPLES_PER_NOTE + N_SAMPLES_BETWEEN_NOTES
 ) * len(MAJOR_SCALE)
@@ -132,7 +129,7 @@ def GenSongs(pitch_range: range, pitches_audio, dtype):
     start_pitch = pitch_range.start
     while True:
         song = np.zeros((SONG_LEN, ), dtype=dtype)
-        cursor = 0
+        cursor = N_SAMPLES_BETWEEN_NOTES
         for d_pitch in MAJOR_SCALE:
             pitch = start_pitch + d_pitch
             try:
@@ -144,7 +141,7 @@ def GenSongs(pitch_range: range, pitches_audio, dtype):
             ] = audio
             cursor += N_SAMPLES_PER_NOTE
             cursor += N_SAMPLES_BETWEEN_NOTES
-        assert cursor == SONG_LEN
+        assert cursor - N_SAMPLES_BETWEEN_NOTES == SONG_LEN
         yield start_pitch, song
         start_pitch += 1
 
