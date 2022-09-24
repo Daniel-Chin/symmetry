@@ -19,16 +19,35 @@ from tqdm import tqdm
 from dataset_config import *
 from intruments_and_ranges import intruments_ranges
 
-SONG_LEN = (
-    N_SAMPLES_PER_NOTE + N_SAMPLES_BETWEEN_NOTES
-) * len(MAJOR_SCALE)
-
+PROLONG = True
 BEND_RATIO = .5  # When MIDI specification is incomplete...
 BEND_MAX = 8191
 GRACE_END = .1
 TEMP_MIDI_FILE = './temp/temp.mid'
 TEMP_WAV_FILE  = './temp/temp.wav'
-DATASET_PATH = './datasets/cleanTrain'
+
+# SOUND_FONT_PATH = './FluidR3_GM/FluidR3_GM.sf2'
+# DATASET_PATH = './datasets/cleanTrain'
+# DATASET_PATH = './datasets/single_note'
+
+SOUND_FONT_PATH = './FluidR3_GM/GeneralUser GS v1.471.sf2'
+# DATASET_PATH = './datasets/cleanTrain_GU'
+DATASET_PATH = './datasets/single_note_GU'
+
+if PROLONG:
+    DATASET_PATH += '_long'
+    assert N_HOPS_PER_NOTE == 4
+    N_HOPS_PER_NOTE = 30
+
+    ENCODE_STEP = N_HOPS_PER_NOTE + N_HOPS_BETWEEN_NOTES
+    N_SAMPLES_PER_NOTE = HOP_LEN * N_HOPS_PER_NOTE
+    N_SAMPLES_BETWEEN_NOTES = HOP_LEN * N_HOPS_BETWEEN_NOTES
+    NOTE_DURATION = N_SAMPLES_PER_NOTE / SR
+    NOTE_INTERVAL = (N_SAMPLES_PER_NOTE + N_SAMPLES_BETWEEN_NOTES) / SR
+
+SONG_LEN = (
+    N_SAMPLES_PER_NOTE + N_SAMPLES_BETWEEN_NOTES
+) * len(MAJOR_SCALE)
 
 fs = FluidSynth(SOUND_FONT_PATH, sample_rate=SR)
 
