@@ -25,17 +25,22 @@ class ExpGroup:
 # RAND_INIT_IDS = ['']
 
 expGroups = [
+    # ExpGroup(
+    #     'vae_aug_0', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae'), 
+    #     'VAE+RNN, without Symmetry', 
+    # ), 
+    # ExpGroup(
+    #     'vae_aug_4', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_4-vae'), 
+    #     'VAE+RNN, Representation Augmented by $4 \\times$', 
+    # ), 
+    # ExpGroup(
+    #     'ae_aug_4', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_4-ae'), 
+    #     'AE+RNN, Representation Augmented by $4 \\times$', 
+    # ), 
+
     ExpGroup(
-        'vae_aug_0', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_0-vae'), 
-        'VAE+RNN, without Symmetry', 
-    ), 
-    ExpGroup(
-        'vae_aug_4', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_4-vae'), 
-        'VAE+RNN, Representation Augmented by $4 \\times$', 
-    ), 
-    ExpGroup(
-        'ae_aug_4', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_4-ae'), 
-        'AE+RNN, Representation Augmented by $4 \\times$', 
+        'vae_aug_1', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_1-vae'), 
+        'VAE+RNN, Representation Augmented by $1 \\times$', 
     ), 
 ]
 RAND_INIT_IDS = [
