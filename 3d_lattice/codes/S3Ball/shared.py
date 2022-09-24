@@ -42,22 +42,22 @@ expGroups = [
     #     'vae_aug_1', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_1-vae'), 
     #     'VAE+RNN, Representation Augmented by $1 \\times$', 
     # ), 
-    ExpGroup(
-        'vae_aug_16', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_16-vae_16'), 
-        'VAE+RNN, Representation Augmented by $16 \\times$', 
-    ), 
     # ExpGroup(
-    #     'vae_aug_16', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_16-vae_42'), 
+    #     'vae_aug_16', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_16-vae_16'), 
     #     'VAE+RNN, Representation Augmented by $16 \\times$', 
     # ), 
+    ExpGroup(
+        'vae_aug_16', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_16-vae_42'), 
+        'VAE+RNN, Representation Augmented by $16 \\times$', 
+    ), 
     # ExpGroup(
     #     'vae_aug_16', path.expandvars('/scratch/$USER/Self-supervised-learning-via-symmetry/codes/S3Ball/dense_exp/symm_16-vae_100'), 
     #     'VAE+RNN, Representation Augmented by $16 \\times$', 
     # ), 
 ]
 RAND_INIT_IDS = [
-    16, 
-    # 42, 
+    # 16, 
+    42, 
     # 100, 
 ]
 
