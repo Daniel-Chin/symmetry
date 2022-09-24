@@ -1,2 +1,4 @@
 raising_12_wav_SF-GS
     9/21 pitch linearity eval
+    this is 12 semitones. 
+    This is not required. Just use one file per note
