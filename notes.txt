@@ -261,8 +261,7 @@ next {
 todo {
     Paper!
         3D 破布展开 visualization, using Xuanjie method
-        linearity, use R^2. 
-            try linear reg squared error
+        linearity. 
     supervised coord RNN
     remember:
         fix TRI
