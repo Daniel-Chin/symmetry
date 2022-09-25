@@ -1,3 +1,6 @@
+DEBUG = False
+
+import os
 from os import path
 import csv
 
@@ -8,11 +11,11 @@ import torch
 from shared import *
 N_ROWS = len(expGroups) * len(RAND_INIT_IDS)
 
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "Helvetica",
-})
+import rc_params
+from rc_params import FONTSIZE
+rc_params.init()
 DPI = plt.rcParams['figure.dpi']
+print(f'{DPI = }')
 
 MAX_T = 80000
 N_COLS = 15
@@ -20,12 +23,15 @@ EPOCH_INTERVAL = 100
 
 Z_SCENE_RADIUS = 3.2
 
-MYSTERIOUS_RATIO = .035
-FIGSIZE = (7, 5)
-FONTSIZE = 12
-HSPACE = .2
-TITLE_HSPACE = 1.8
+MYSTERIOUS_RATIO = .06
+# FIGSIZE = (11, 5) # 2 rows
+FIGSIZE = (11, 8) # 3 rows
+HSPACE = .1
+TITLE_HSPACE = 1
 TITLE_HSPACE_PER_ROW = TITLE_HSPACE / len(RAND_INIT_IDS)
+EPOCH_SINK = -.4 * DPI
+ARROW_SINK = -.27 * DPI
+ARROW_WIDTH = 8.4
 COLORS = (
     (.9, 0, 0), 
     (0, .7, 0), 
@@ -53,6 +59,9 @@ def main():
     )
     fig.subplots_adjust(
         hspace = HSPACE + TITLE_HSPACE_PER_ROW, 
+        # top = .93, bottom=.08, # 2 rows
+        top = .95, bottom=.05, # 3 rows
+        left=.08, right=.96, 
     )
     for (
         batch_i, row_i, col_i, expGroup, 
@@ -85,19 +94,17 @@ def main():
             # ) + epoch)
             # ax.set_xlabel(f'Epoch {epoch}')
 
-            EPOCH_SINK = -2 * DPI
             ax.annotate(
                 epoch, xy=(
                     (
                         bBox.width * DPI / MYSTERIOUS_RATIO
-                    ) / 2 - textWidth(epoch) / 2, 
+                    ) * .5 / 2 - textWidth(epoch) / 2, 
                     EPOCH_SINK, 
                 ), 
                 xycoords='axes pixels', fontsize=FONTSIZE, 
             )
             if col_i == 0:
                 EPOCH_HEADING = 'Epoch '
-                ARROW_SINK = -1.3 * DPI
                 ARROW_X = 0 * DPI
                 ax.annotate(
                     EPOCH_HEADING, xy=(
@@ -113,7 +120,7 @@ def main():
                     ), 
                     xy=(
                         (
-                            DPI * 26 
+                            DPI * ARROW_WIDTH 
                             - bBox.x0 * DPI / MYSTERIOUS_RATIO
                         ), 
                         ARROW_SINK, 
@@ -130,7 +137,12 @@ def main():
     ) in SubplotIter():
         ax = axes[row_i][col_i]
         ax.set_position(bBoxes.pop(0))
-    plt.show()
+    plt.savefig('./1.pdf', dpi=DPI)
+    # plt.show()
+    os.system('explorer ' + path.join(
+        path.abspath(path.dirname(__file__)), 
+        '1.pdf', 
+    ))
     print('ok')
 
 def plotOne(
@@ -158,6 +170,8 @@ def plotOne(
         c = csv.reader(f)
         next(c)
         for x_i in range(N_CURVE_VERTICES):
+            if DEBUG:
+                break
             for y_i in range(N_CURVE_VERTICES):
                 for z_i in range(N_CURVE_VERTICES):
                     x_i, y_i, z_i, z0, z1, z2 = next(c)
@@ -172,14 +186,15 @@ def plotOne(
         except StopIteration:
             pass
         else:
-            raise Exception('CSV longer than expected.')
+            if not DEBUG:
+                raise Exception('CSV longer than expected.')
 
     ax.set_xlim(-Z_SCENE_RADIUS, Z_SCENE_RADIUS)
     ax.set_ylim(-Z_SCENE_RADIUS, Z_SCENE_RADIUS)
     # ax.set_xticks([-2, 0, 2])
     # ax.set_yticks([-2, 0, 2])
     ax.set_xticks([-2, 2])
-    ax.set_yticks([-2, 2])
+    ax.set_yticks([-2, 2])  
 
     step = N_CURVE_SEGMENTS // (N_CURVES - 1)
     for curve_i in range(0, N_CURVE_SEGMENTS, step):
@@ -199,7 +214,7 @@ def plotOne(
                 )
 
 def textHeight():
-    return FONTSIZE * 2.8
+    return FONTSIZE * .5
 
 def textWidth(x):
     return len(x) * textHeight()
