@@ -24,8 +24,10 @@ EPOCH_INTERVAL = 100
 Z_SCENE_RADIUS = 3.2
 
 MYSTERIOUS_RATIO = .06
-# FIGSIZE = (11, 5) # 2 rows
-FIGSIZE = (11, 8) # 3 rows
+if N_ROWS == 2:
+    FIGSIZE = (11, 5) # 2 rows
+else:
+    FIGSIZE = (11, 8) # 3 rows
 HSPACE = .1
 TITLE_HSPACE = 1
 TITLE_HSPACE_PER_ROW = TITLE_HSPACE / len(RAND_INIT_IDS)
@@ -59,10 +61,12 @@ def main():
     )
     fig.subplots_adjust(
         hspace = HSPACE + TITLE_HSPACE_PER_ROW, 
-        # top = .93, bottom=.08, # 2 rows
-        top = .95, bottom=.05, # 3 rows
         left=.08, right=.96, 
     )
+    if N_ROWS == 2:
+        fig.subplots_adjust(top = .93, bottom=.08)
+    else:
+        fig.subplots_adjust(top = .95, bottom=.05)
     for (
         batch_i, row_i, col_i, expGroup, 
         rand_init_i, rand_init_id, 
@@ -189,17 +193,18 @@ def plotOne(
             if not DEBUG:
                 raise Exception('CSV longer than expected.')
 
-    ax.set_xlim(-Z_SCENE_RADIUS, Z_SCENE_RADIUS)
-    ax.set_ylim(-Z_SCENE_RADIUS, Z_SCENE_RADIUS)
-    # ax.set_xticks([-2, 0, 2])
-    # ax.set_yticks([-2, 0, 2])
-    ax.set_xticks([-2, 2])
-    ax.set_yticks([-2, 2])  
+    if 'vae' in expGroup.name:
+        ax.set_xlim(-Z_SCENE_RADIUS, Z_SCENE_RADIUS)
+        ax.set_ylim(-Z_SCENE_RADIUS, Z_SCENE_RADIUS)
+        # ax.set_xticks([-2, 0, 2])
+        # ax.set_yticks([-2, 0, 2])
+        ax.set_xticks([-2, 2])
+        ax.set_yticks([-2, 2])  
 
     step = N_CURVE_SEGMENTS // (N_CURVES - 1)
-    for curve_i in range(0, N_CURVE_SEGMENTS, step):
+    for curve_i in range(0, N_CURVE_SEGMENTS + 1, step):
         # print('curve_i', curve_i)
-        for curve_j in range(0, N_CURVE_SEGMENTS, step):
+        for curve_j in range(0, N_CURVE_SEGMENTS + 1, step):
             z_segs = (
                 zLattice[:, curve_i, curve_j, :], 
                 zLattice[curve_i, :, curve_j, :], 
