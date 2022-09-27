@@ -260,7 +260,9 @@ next {
 }
 todo {
     Paper!
-        write text
+        use "Ours" as label
+        latex
+            replace ’ -> '
     supervised coord RNN
     remember:
         fix TRI
