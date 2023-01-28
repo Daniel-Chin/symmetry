@@ -32,7 +32,8 @@ TEMP_WAV_FILE  = './temp/temp.wav'
 
 SOUND_FONT_PATH = './FluidR3_GM/GeneralUser GS v1.471.sf2'
 # DATASET_PATH = './datasets/cleanTrain_GU'
-DATASET_PATH = './datasets/single_note_GU'
+# DATASET_PATH = './datasets/single_note_GU'
+DATASET_PATH = './datasets/non12tet'
 
 if PROLONG:
     DATASET_PATH += '_long'
@@ -134,7 +135,7 @@ def main():
                 -FADE_OUT_N_SAMPLES:
             ] * FADE_OUT_FILTER
         for start_pitch, song in GenSongs(
-            pitch_range, pitches_audio, dtype, 
+            pitch_range, pitches_audio, dtype, instrument, 
         ):
             index.append((instrument.instrumentName, start_pitch))
             soundfile.write(path.join(
@@ -144,7 +145,7 @@ def main():
     with open(path.join(DATASET_PATH, 'index.pickle'), 'wb') as f:
         pickle.dump(index, f)
 
-def GenSongs(pitch_range: range, pitches_audio, dtype):
+def GenSongs(pitch_range: range, pitches_audio, dtype, instrument):
     start_pitch = pitch_range.start
     while True:
         song = np.zeros((SONG_LEN, ), dtype=dtype)
@@ -154,7 +155,10 @@ def GenSongs(pitch_range: range, pitches_audio, dtype):
             try:
                 audio = pitches_audio[pitch]
             except KeyError:
-                return
+                # cache missed. fallback to on-demand synthesis
+                audio = synthOneNote(
+                    fs, pitch, instrument, 
+                )[:N_SAMPLES_PER_NOTE]
             song[
                 cursor : cursor + N_SAMPLES_PER_NOTE
             ] = audio
